@@ -1,12 +1,7 @@
 // Packages:
 
 // JDBC Libraries:
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 // JDK Libraries
 import java.text.DateFormat;
@@ -72,7 +67,7 @@ import oracle.jdbc.driver.*;    // JDBC Driver
 //      getString(string)            -> Returns the value of the designated column name in string
 //      getInt(i)                    -> Returns the ith attribute selected, when Integer
 //      executeUpdate()              -> used to execute when SQL stmt does not return records
-//      executeQuerty()              -> used to execute when SQL stmtt returns records
+//      executeQuery()              -> used to execute when SQL stmt returns records
 //      next()                       -> read next row of results from Result Set
 //      previous()                   -> read one row back from current row in Result Set
 //      absolute(i)                  -> reads the row with the specified number i in Result Set
@@ -141,9 +136,9 @@ public class HotelDatabase {
 
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Username: ");
+        System.out.print("Username: ");
         this.username = scan.next();
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         this.password = scan.next();
 
         // Registering the JDBC Driver
@@ -165,9 +160,56 @@ public class HotelDatabase {
         catch (SQLException e) { throw e; }
     }
 
-    ///////////////////////////////////////////////////////////////////////////////
-    //                            Getter and Setter Methods                      //
-    ///////////////////////////////////////////////////////////////////////////////
+    // Inserts a new customer
+    public void createCustomer(Connection connection) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()) {
+
+            String sql = "INSERT INTO Customer VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a unique Customer ID: ");
+            setCID(scan.nextInt());
+            pStmt.setInt(1, getCID());
+
+            System.out.print("Please provide a first name: ");
+            setFirstName(scan.next());
+            pStmt.setString(2, getFirstName());
+
+            System.out.print("Please provide a last name: ");
+            setLastName(scan.next());
+            pStmt.setString(3, getLastName());
+
+            System.out.print("Please provide an age: ");
+            setAge(scan.nextInt());
+            pStmt.setInt(4, getAge());
+
+            System.out.print("Please provide a gender: ");
+            setGender(scan.next().charAt(0));
+            pStmt.setString(5, String.valueOf(getGender()));
+
+            try {
+                pStmt.executeUpdate();
+            } catch (SQLException e) {
+                throw e;
+            } finally {
+                pStmt.close();
+            }
+        } else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //                            Getter and Setter Methods                      //
+        ///////////////////////////////////////////////////////////////////////////////
 
     public String getCity() {
         return this.city;
