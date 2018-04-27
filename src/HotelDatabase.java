@@ -17,13 +17,70 @@ import java.util.Scanner;
 import java.math.*;
 import oracle.jdbc.driver.*;    // JDBC Driver
 
-// Steps to submit a database query:
-//  1. Load the JDBC Driver
-//  2. Connect to the data source
-//  3. Execute SQL statements
-
 // Enter at command line when starting Java Application:
 // -Djdbc.drivers=oracle/jdbc.driver
+
+///////////////////////////////////////////////////////////////////////////////
+// JDBC API Reference:
+//
+// 1. Creating a Statement Object
+//
+// String sql = "INSERT INTO [Table Name] VALUES (?, ?, ?, ?)";  -> '?' is a placeholder
+// PreparedStatement pStmt = connection.prepareStatement(sql);
+//
+// pStmt.clearParameters();             -> Clears parameters
+// pStmt.setString(1, "88877");         -> Sets parameter 1 to "88877"
+// pStmt.setInt(2, 125000);             -> Sets parameter 2 to 125000
+//
+// 2. Executing a Query
+//
+// try {
+//   int numRows = pStmt.executeUpdate(); -> executeUpdate() used if SQL stmt does
+// } catch (SQLException sqle);              NOT return any records (e.g. UPDATE,
+//                                           INSERT, ALTER, and DELETE commands).
+//                                           Returns an integer indicated the number
+//                                           of rows the SQL update modified.
+//
+// String sqlQuery = "SELECT name, salary FROM [Table Name] WHERE ID=?";
+// PreparedStatement pStmt2 = connection.prepareStatement(sqlQuery);
+//
+// pStmt2.setString(1, ID);                -> Replaces '?'
+//
+// ResultSet rset = pStmt2.executeQuery(); -> executeQuery() used if SQL stmt DOES
+//                                            return rows, MUST save in a ResultSet
+//
+// 3. Printing Query Results
+//
+// while (rset.next())
+//    System.out.println(rset.getString(1) + " " + rset.getInt(2));
+//
+//     -> (1) in getString refers to 'name' value in SELECT query, and (2)
+//        refers to 'salary' value in SELECT query
+//
+// 4. Closing the Result Set
+//
+// rset.close();
+// pStmt.close();
+// pStmt2.close();
+//
+// APPENDIX:
+//   - API Commands:
+//      clearParameters()            -> Clears parameters
+//      setString(i, string)         -> Sets parameter number i to String string
+//      setInt(i, x)                 -> Sets parameter number i to value in x
+//      getString(i)                 -> Returns the ith attribute selected, when String
+//      getString(string)            -> Returns the value of the designated column name in string
+//      getInt(i)                    -> Returns the ith attribute selected, when Integer
+//      executeUpdate()              -> used to execute when SQL stmt does not return records
+//      executeQuerty()              -> used to execute when SQL stmtt returns records
+//      next()                       -> read next row of results from Result Set
+//      previous()                   -> read one row back from current row in Result Set
+//      absolute(i)                  -> reads the row with the specified number i in Result Set
+//      relative(i)                  -> moves forward or backward (if negative)
+//      first()                      -> reads the first row in the Result Set
+//      last()                       -> reads the last row in the Result Set
+//
+///////////////////////////////////////////////////////////////////////////////
 
 public class HotelDatabase {
 
@@ -108,9 +165,9 @@ public class HotelDatabase {
         catch (SQLException e) { throw e; }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    //                               Getter and Setter Methods                                //
-    ////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    //                            Getter and Setter Methods                      //
+    ///////////////////////////////////////////////////////////////////////////////
 
     public String getCity() {
         return this.city;
