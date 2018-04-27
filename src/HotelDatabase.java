@@ -129,10 +129,7 @@ public class HotelDatabase {
         // Get the connection:
         Connection connection = hotelDB.getConnection();
         try {
-            hotelDB.updateCustomerFirstName(connection, 12345);
-            hotelDB.updateCustomerLastName(connection, 12345);
-            hotelDB.updateCustomerAge(connection, 12345);
-            hotelDB.updateCustomerGender(connection, 12345);
+            hotelDB.deleteCustomer(connection, 12345);
         } catch(SQLException e) {
             System.out.print("no");
             e.printStackTrace();
@@ -321,6 +318,31 @@ public class HotelDatabase {
 
             setCID(CID);
             pStmt.setInt(2, getCID());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+    public void deleteCustomer(Connection connection, int CID) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()){
+
+            String sql = "DELETE FROM Customer WHERE c_ID = ?";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            setCID(CID);
+            pStmt.setInt(1, getCID());
 
             try { pStmt.executeUpdate(); }
             catch (SQLException e) { throw e; }
