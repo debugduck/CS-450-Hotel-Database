@@ -128,6 +128,15 @@ public class HotelDatabase {
 
         // Get the connection:
         Connection connection = hotelDB.getConnection();
+        try {
+            hotelDB.updateCustomerFirstName(connection, 12345);
+            hotelDB.updateCustomerLastName(connection, 12345);
+            hotelDB.updateCustomerAge(connection, 12345);
+            hotelDB.updateCustomerGender(connection, 12345);
+        } catch(SQLException e) {
+            System.out.print("no");
+            e.printStackTrace();
+        }
 
     }
 
@@ -194,9 +203,8 @@ public class HotelDatabase {
             setGender(scan.next().charAt(0));
             pStmt.setString(5, String.valueOf(getGender()));
 
-            try {
-                pStmt.executeUpdate();
-            } catch (SQLException e) {
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) {
                 throw e;
             } finally {
                 pStmt.close();
@@ -207,9 +215,125 @@ public class HotelDatabase {
     }
 
 
-        ///////////////////////////////////////////////////////////////////////////////
-        //                            Getter and Setter Methods                      //
-        ///////////////////////////////////////////////////////////////////////////////
+    public void updateCustomerFirstName(Connection connection, int CID) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()){
+
+            String sql = "UPDATE Customer SET first_name = ? WHERE c_ID = ?";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a new first name: ");
+            setFirstName(scan.next());
+            pStmt.setString(1, getFirstName());
+
+            setCID(CID);
+            pStmt.setInt(2, getCID());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+    public void updateCustomerLastName(Connection connection, int CID) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()){
+
+            String sql = "UPDATE Customer SET last_name = ? WHERE c_ID = ?";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a new last name: ");
+            setLastName(scan.next());
+            pStmt.setString(1, getLastName());
+
+            setCID(CID);
+            pStmt.setInt(2, getCID());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+    public void updateCustomerGender(Connection connection, int CID) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()){
+
+            String sql = "UPDATE Customer SET gender = ? WHERE c_ID = ?";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a new gender: ");
+            setGender(scan.next().charAt(0));
+            pStmt.setString(1, String.valueOf(getGender()));
+
+            setCID(CID);
+            pStmt.setInt(2, getCID());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+    public void updateCustomerAge(Connection connection, int CID) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+
+        if (rs.next()){
+
+            String sql = "UPDATE Customer SET age = ? WHERE c_ID = ?";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a new age: ");
+            setAge(scan.nextInt());
+            pStmt.setInt(1, getAge());
+
+            setCID(CID);
+            pStmt.setInt(2, getCID());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading CUSTOMER Table.");
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //                            Getter and Setter Methods                      //
+    ///////////////////////////////////////////////////////////////////////////////
 
     public String getCity() {
         return this.city;
