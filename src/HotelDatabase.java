@@ -436,7 +436,7 @@ public class HotelDatabase {
       linkHotelAddress(connection);  // Links HOTEL with ADDRESS entities in HOTEL_ADDRESS relation
 
       do {
-        createRoom(connection);
+        createRoom(connection, scan);
         System.out.println("Would you like to add another room type to this hotel (Y, N): ");
       } while ((String.valueOf(scan.next())).toUpperCase().equals("Y"));
     }
@@ -445,8 +445,39 @@ public class HotelDatabase {
     }
   }
 
+  public void updateHotelPhone(Connection connection, String hotel_name, int branch_ID) throws SQLException {
+
+    Scanner scan = new Scanner(System.in);
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "HOTEL", null);
+
+    if (rs.next()){
+
+      String sql = "UPDATE Hotel SET phone = ? WHERE hotel_name = ? AND branch_ID = ?";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
+
+      System.out.print("Please provide a new phone number: ");
+      setPhone(scan.nextLine());
+      pStmt.setString(1, getPhone());
+
+      setHotelName(hotel_name);
+      pStmt.setString(2, getHotelName());
+      setBranchID(branch_ID);
+      pStmt.setInt(3, getBranchID());
+
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
+    }
+    else {
+      System.out.println("ERROR: Error loading HOTEL Table.");
+    }
+  }
+
   // Inserts a new room into the ROOM Table, linking the weak entity with the HOTEL strong entity:
-  public void createRoom(Connection connection) throws SQLException {
+  private void createRoom(Connection connection, Scanner scan) throws SQLException {
 
     DatabaseMetaData dmd = connection.getMetaData();
     ResultSet rs1 = dmd.getTables(null, null, "ROOM", null);
@@ -470,7 +501,7 @@ public class HotelDatabase {
       catch (SQLException e) { throw e; }
       finally { pStmt.close(); }
 
-      linkHotelRoom(connection);
+      linkHotelRoom(connection, scan);
     }
     else {
       System.out.println("ERROR: Error loading ROOM or HOTEL_ROOMS Table.");
@@ -479,6 +510,8 @@ public class HotelDatabase {
 
   // Prompts user to provide existing hotel and branch_ID to add as many room types as necessary:
   public void giveHotelRooms(Connection connection) throws SQLException {
+
+    Scanner scan = new Scanner(System.in);
 
     DatabaseMetaData dmd = connection.getMetaData();
     ResultSet rs = dmd.getTables(null, null, "HOTEL", null);
@@ -496,7 +529,7 @@ public class HotelDatabase {
 
       // Loop to create room types and link to Hotel:
       do {
-        createRoom(connection);
+        createRoom(connection, scan);
         System.out.println("Would you like to add another room type to this hotel (Y, N): ");
       } while ((String.valueOf(scan.next())).toUpperCase().equals("Y"));
     }
@@ -524,7 +557,7 @@ public class HotelDatabase {
   }
 
   // Links the current HOTEL and ROOM attributes values into the HOTEL_ROOMS relation:
-  private void linkHotelRoom(Connection connection) throws SQLException{
+  private void linkHotelRoom(Connection connection, Scanner scan) throws SQLException{
 
     String sql = "INSERT INTO Hotel_Rooms VALUES (?, ?, ?, ?)";
     PreparedStatement pStmt = connection.prepareStatement(sql);
