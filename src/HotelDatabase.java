@@ -148,7 +148,7 @@ public class HotelDatabase {
   }
 
   // Opens a connection to the DB:
-  public Connection getConnection(){
+  public Connection getConnection() {
 
     Scanner scan = new Scanner(System.in);
 
@@ -445,6 +445,7 @@ public class HotelDatabase {
     }
   }
 
+  // Updates Hotel phone number attribute given hotel name and branch ID:
   public void updateHotelPhone(Connection connection, String hotel_name, int branch_ID) throws SQLException {
 
     Scanner scan = new Scanner(System.in);
@@ -539,7 +540,7 @@ public class HotelDatabase {
   }
 
   // Links the current HOTEL and ADDRESS attributes values into the HOTEL_ADDRESS relation:
-  private void linkHotelAddress(Connection connection) throws SQLException{
+  private void linkHotelAddress(Connection connection) throws SQLException {
 
     String sql = "INSERT INTO Hotel_Address VALUES (?, ?, ?, ?, ?)";
     PreparedStatement pStmt = connection.prepareStatement(sql);
@@ -557,7 +558,7 @@ public class HotelDatabase {
   }
 
   // Links the current HOTEL and ROOM attributes values into the HOTEL_ROOMS relation:
-  private void linkHotelRoom(Connection connection, Scanner scan) throws SQLException{
+  private void linkHotelRoom(Connection connection, Scanner scan) throws SQLException {
 
     String sql = "INSERT INTO Hotel_Rooms VALUES (?, ?, ?, ?)";
     PreparedStatement pStmt = connection.prepareStatement(sql);
@@ -574,6 +575,83 @@ public class HotelDatabase {
     try { pStmt.executionUpdate(); }
     catch (SQLException e) { throw e; }
     finally { pStmt.close(); }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+  //                                Command Line GUI                           //
+  ///////////////////////////////////////////////////////////////////////////////
+
+  // Prints the main menu interfac for user display:
+  public void mainMenu() {
+
+    System.out.println("\n                            HOTEL RESERVATION SYSTEM");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println(" COMMANDS:");
+    System.out.println(" - View Tables\t\t(1)");
+    System.out.println(" - Add Records\t\t(2)");
+    System.out.println(" - Update Records\t(3)");
+    System.out.println(" - Delete Records\t(4)");
+    System.out.println(" - Search Records\t(5)");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.print(" > ");
+  }
+
+  // Prints the interface for tables available for user display:
+  public void printViewTables() {
+
+    System.out.println("\n                                  VIEW TABLES");
+    System.out.println("+------------------------------------------------------------------------------+");
+    //System.out.println(" - Addresses\t\t(A) - Display all addresses where hotels are located");
+    System.out.println(" - Hotels\t\t(H)  - Display all hotels and their branch IDs");
+    System.out.println(" - Rooms\t\t(R)  - Display all room types offered by each hotel");
+    System.out.println(" - Customers\t\t(C)  - Display all customer accounts");
+    System.out.println(" - Reservations\t\t(R)  - Display all reservations made by customers");
+    //System.out.println(" - Date Listings \t\t (D) - Display all date listings ");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println(" - Hotel Addresses\t(HA) - Display all hotels and their addresses");
+    System.out.println(" - Hotel Rooms\t\t(HR) - Display all hotels and room type quantities");
+    //System.out.println(" - Reserved (RR) - Display all reservation numbers of each customer");
+    System.out.println(" - Bookings\t\t(BK) - Display all customer booking information");
+    System.out.println(" - Information\t\t(IN) - Display all availabilities and pricelistings");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.print(" > ");
+  }
+
+  public void printAddRecords() {
+
+    System.out.println("\n                                  ADD RECORDS");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println(" - Add Customer\t\t(1)");
+    System.out.println(" - Add Hotel\t\t(2)");
+    System.out.println(" - Add Hotel Room(s)\t\t(3)");
+    System.out.println(" - Add Reservation\t\t(4)");
+    System.out.println("+------------------------------------------------------------------------------+");
+  }
+
+  public void printUpdateRecords() {
+
+    System.out.println("\n                                UPDATE RECORDS");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println(" - Update Customer [NAME]\t\t(C1)");
+    System.out.println(" - Update Customer [AGE]\t\t(C2)");
+    System.out.println(" - Update Customer [GENDER]\t\t(C3)");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println(" - Update Hotel [PHONE]\t\t(H1)");
+    System.out.println("+------------------------------------------------------------------------------+");
+  }
+
+  public void printDeleteRecords() {
+
+    System.out.println("\n                                DELETE RECORDS");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println("+------------------------------------------------------------------------------+");
+  }
+
+  public void printSearchRecords() {
+
+    System.out.println("\n                                SEARCH RECORDS");
+    System.out.println("+------------------------------------------------------------------------------+");
+    System.out.println("+------------------------------------------------------------------------------+");
   }
 
   ///////////////////////////////////////////////////////////////////////////////
