@@ -96,7 +96,7 @@ public class HotelDatabase {
 
     // Hotel Properties:
     private String hotel_name;
-    private String branch_ID;
+    private int branch_ID;
     private String phone;          // do check length > 10
 
     // Room (Type) Properties:
@@ -128,8 +128,9 @@ public class HotelDatabase {
 
         // Get the connection:
         Connection connection = hotelDB.getConnection();
+        Scanner scan = new Scanner(System.in);
         try {
-            hotelDB.deleteCustomer(connection, 12345);
+            hotelDB.createHotel(connection);
         } catch(SQLException e) {
             System.out.print("no");
             e.printStackTrace();
@@ -143,9 +144,9 @@ public class HotelDatabase {
         Scanner scan = new Scanner(System.in);
 
         System.out.print("Username: ");
-        this.username = scan.next();
+        this.username = scan.nextLine();
         System.out.print("Password: ");
-        this.password = scan.next();
+        this.password = scan.nextLine();
 
         // Registering the JDBC Driver
         try { Class.forName(driver); }
@@ -185,11 +186,11 @@ public class HotelDatabase {
             pStmt.setInt(1, getCID());
 
             System.out.print("Please provide a first name: ");
-            setFirstName(scan.next());
+            setFirstName(scan.nextLine());
             pStmt.setString(2, getFirstName());
 
             System.out.print("Please provide a last name: ");
-            setLastName(scan.next());
+            setLastName(scan.nextLine());
             pStmt.setString(3, getLastName());
 
             System.out.print("Please provide an age: ");
@@ -226,7 +227,7 @@ public class HotelDatabase {
             pStmt.clearParameters();
 
             System.out.print("Please provide a new first name: ");
-            setFirstName(scan.next());
+            setFirstName(scan.nextLine());
             pStmt.setString(1, getFirstName());
 
             setCID(CID);
@@ -255,7 +256,7 @@ public class HotelDatabase {
             pStmt.clearParameters();
 
             System.out.print("Please provide a new last name: ");
-            setLastName(scan.next());
+            setLastName(scan.nextLine());
             pStmt.setString(1, getLastName());
 
             setCID(CID);
@@ -353,6 +354,99 @@ public class HotelDatabase {
         }
     }
 
+    // Inserts a new address into the ADDRESS Table:
+    public void createAddress(Connection connection, Scanner scan) throws SQLException {
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs = dmd.getTables(null, null, "ADDRESS", null);
+
+        if (rs.next()){
+
+            String sql = "INSERT INTO Address VALUES (?, ?, ?)";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide hotel address city: ");
+            setCity(scan.nextLine());
+            pStmt.setString(1, getCity());
+
+            System.out.print("Please provide hotel address state: ");
+            setState(scan.nextLine());
+            pStmt.setString(2, getState());
+
+            System.out.print("Please provide hotel address zip: ");
+            setZip(Integer.parseInt(scan.nextLine()));
+            pStmt.setInt(3, getZip());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+        }
+        else {
+            System.out.println("ERROR: Error loading ADDRESS Table.");
+        }
+    }
+
+    // Inserts a new hotel into the HOTEL Table, updating ADDRESS and HOTEL_ADDRESS appropriotely:
+    public void createHotel(Connection connection) throws SQLException {
+
+        Scanner scan = new Scanner(System.in);
+
+        DatabaseMetaData dmd = connection.getMetaData();
+        ResultSet rs1 = dmd.getTables(null, null, "HOTEL", null);
+        ResultSet rs2 = dmd.getTables(null, null, "HOTEL_ADDRESS", null);
+
+        // Must successfully locate HOTEL and HOTEL_ADDRESS before proceeding:
+        if (rs1.next() && rs2.next()){
+
+            createAddress(connection, scan);      // Creates an address to link HOTEL with ADDRESS
+
+            String sql = "INSERT INTO Hotel VALUES (?, ?, ?)";
+            PreparedStatement pStmt = connection.prepareStatement(sql);
+            pStmt.clearParameters();
+
+            System.out.print("Please provide a hotel name: ");
+            setHotelName(scan.nextLine());
+            pStmt.setString(1, getHotelName());
+
+            System.out.print("Please provide a branch ID: ");
+            setBranchID(Integer.parseInt(scan.nextLine()));
+            pStmt.setInt(2, getBranchID());
+
+
+            System.out.print("Please provide a phone number: ");
+            setPhone(scan.nextLine());
+            pStmt.setString(3, getPhone());
+
+            try { pStmt.executeUpdate(); }
+            catch (SQLException e) { throw e; }
+            finally { pStmt.close(); }
+
+            linkHotelAddress(connection);  // Links HOTEL with ADDRESS entities in HOTEL_ADDRESS relation
+        }
+        else {
+            System.out.println("ERROR: Error loading HOTEL or HOTEL_ADDRESS Table.");
+        }
+    }
+
+    // Links the current HOTEL and ADDRESS attributes values into the HOTEL_ADDRESS relation:
+    private void linkHotelAddress(Connection connection) throws SQLException{
+
+        String sql = "INSERT INTO Hotel_Address VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pStmt = connection.prepareStatement(sql);
+        pStmt.clearParameters();
+
+        pStmt.setString(1, getHotelName());
+        pStmt.setInt(2, getBranchID());
+        pStmt.setString(3, getCity());
+        pStmt.setString(4, getState());
+        pStmt.setInt(5, getZip());
+
+        try { pStmt.executeUpdate(); }
+        catch (SQLException e) { throw e; }
+        finally { pStmt.close(); }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     //                            Getter and Setter Methods                      //
     ///////////////////////////////////////////////////////////////////////////////
@@ -370,7 +464,7 @@ public class HotelDatabase {
     }
 
     public void setState(String newState) {
-        this.city = newState;
+        this.state = newState;
     }
 
     public int getZip() {
@@ -389,11 +483,11 @@ public class HotelDatabase {
         this.hotel_name = newHotelName;
     }
 
-    public String getBranchID() {
+    public int getBranchID() {
         return this.branch_ID;
     }
 
-    public void setBranchID(String newBranchID) {
+    public void setBranchID(int newBranchID) {
         this.branch_ID = newBranchID;
     }
 
