@@ -2,6 +2,7 @@
 
 // JDBC Libraries:
 import java.sql.*;
+import oracle.jdbc.driver.*;    // JDBC Driver
 
 // JDK Libraries
 import java.text.DateFormat;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.math.*;
-import oracle.jdbc.driver.*;    // JDBC Driver
 
 // Enter at command line when starting Java Application:
 // -Djdbc.drivers=oracle/jdbc.driver
@@ -176,48 +176,48 @@ public class HotelDatabase {
     catch (SQLException e) { throw e; }
   }
 
-    // Inserts a new customer into the CUSTOMER table:
-    public void createCustomer(Connection connection) throws SQLException {
+  // Inserts a new customer into the CUSTOMER table:
+  public void createCustomer(Connection connection) throws SQLException {
 
-        Scanner scan = new Scanner(System.in);
+    Scanner scan = new Scanner(System.in);
 
-        DatabaseMetaData dmd = connection.getMetaData();
-        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
 
-        if (rs.next()) {
+    if (rs.next()) {
 
-            String sql = "INSERT INTO Customer VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement pStmt = connection.prepareStatement(sql);
-            pStmt.clearParameters();
+      String sql = "INSERT INTO Customer VALUES (?, ?, ?, ?, ?)";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
 
-            System.out.print("Please provide a unique Customer ID: ");
-            setCID(Integer.parseInt(scan.nextLine()));
-            pStmt.setInt(1, getCID());
+      System.out.print("Please provide a unique Customer ID: ");
+      setCID(Integer.parseInt(scan.nextLine()));
+      pStmt.setInt(1, getCID());
 
-            System.out.print("Please provide a first name: ");
-            setFirstName(scan.nextLine());
-            pStmt.setString(2, getFirstName());
+      System.out.print("Please provide a first name: ");
+      setFirstName(scan.nextLine());
+      pStmt.setString(2, getFirstName());
 
-            System.out.print("Please provide a last name: ");
-            setLastName(scan.nextLine());
-            pStmt.setString(3, getLastName());
+      System.out.print("Please provide a last name: ");
+      setLastName(scan.nextLine());
+      pStmt.setString(3, getLastName());
 
-            System.out.print("Please provide an age: ");
-            setAge(Integer.parseInt(scan.nextLine()));
-            pStmt.setInt(4, getAge());
+      System.out.print("Please provide an age: ");
+      setAge(Integer.parseInt(scan.nextLine()));
+      pStmt.setInt(4, getAge());
 
-            System.out.print("Please provide a gender: ");
-            setGender(scan.next().charAt(0));
-            pStmt.setString(5, String.valueOf(getGender()));
+      System.out.print("Please provide a gender: ");
+      setGender(scan.next().charAt(0));
+      pStmt.setString(5, String.valueOf(getGender()));
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
-            finally { pStmt.close(); }
-        }
-        else {
-            System.out.println("ERROR: Error loading CUSTOMER Table.");
-        }
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
     }
+    else {
+      System.out.println("ERROR: Error loading CUSTOMER Table.");
+    }
+  }
 
   // Updates Customer first name attribute given CID:
   public void updateCustomerFirstName(Connection connection, int CID) throws SQLException {
@@ -339,124 +339,209 @@ public class HotelDatabase {
     }
   }
 
-    // Deletes a Customer given CID from the CUSTOMER Table:
-    public void deleteCustomer(Connection connection, int CID) throws SQLException {
+  // Deletes a Customer given CID from the CUSTOMER Table:
+  public void deleteCustomer(Connection connection, int CID) throws SQLException {
 
-        Scanner scan = new Scanner(System.in);
+    Scanner scan = new Scanner(System.in);
 
-        DatabaseMetaData dmd = connection.getMetaData();
-        ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "CUSTOMER", null);
 
-        if (rs.next()){
+    if (rs.next()){
 
-            String sql = "DELETE FROM Customer WHERE c_ID = ?";
-            PreparedStatement pStmt = connection.prepareStatement(sql);
-            pStmt.clearParameters();
+      String sql = "DELETE FROM Customer WHERE c_ID = ?";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
 
-            setCID(CID);
-            pStmt.setInt(1, getCID());
+      setCID(CID);
+      pStmt.setInt(1, getCID());
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
-            finally { pStmt.close(); }
-        }
-        else {
-            System.out.println("ERROR: Error loading CUSTOMER Table.");
-        }
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
     }
-
-    // Inserts a new address into the ADDRESS Table:
-    public void createAddress(Connection connection, Scanner scan) throws SQLException {
-
-        DatabaseMetaData dmd = connection.getMetaData();
-        ResultSet rs = dmd.getTables(null, null, "ADDRESS", null);
-
-        if (rs.next()){
-
-            String sql = "INSERT INTO Address VALUES (?, ?, ?)";
-            PreparedStatement pStmt = connection.prepareStatement(sql);
-            pStmt.clearParameters();
-
-            System.out.print("Please provide hotel address city: ");
-            setCity(scan.nextLine());
-            pStmt.setString(1, getCity());
-
-            System.out.print("Please provide hotel address state: ");
-            setState(scan.nextLine());
-            pStmt.setString(2, getState());
-
-            System.out.print("Please provide hotel address zip: ");
-            setZip(Integer.parseInt(scan.nextLine()));
-            pStmt.setInt(3, getZip());
-
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
-            finally { pStmt.close(); }
-        }
-        else {
-            System.out.println("ERROR: Error loading ADDRESS Table.");
-        }
+    else {
+      System.out.println("ERROR: Error loading CUSTOMER Table.");
     }
+  }
 
-    // Inserts a new hotel into the HOTEL Table, updating ADDRESS and HOTEL_ADDRESS appropriately:
-    public void createHotel(Connection connection) throws SQLException {
+  // Inserts a new address into the ADDRESS Table:
+  public void createAddress(Connection connection, Scanner scan) throws SQLException {
 
-        Scanner scan = new Scanner(System.in);
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "ADDRESS", null);
 
-        DatabaseMetaData dmd = connection.getMetaData();
-        ResultSet rs1 = dmd.getTables(null, null, "HOTEL", null);
-        ResultSet rs2 = dmd.getTables(null, null, "HOTEL_ADDRESS", null);
+    if (rs.next()){
 
-        // Must successfully locate HOTEL and HOTEL_ADDRESS before proceeding:
-        if (rs1.next() && rs2.next()){
+      String sql = "INSERT INTO Address VALUES (?, ?, ?)";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
 
-            createAddress(connection, scan);      // Creates an address to link HOTEL with ADDRESS
+      System.out.print("Please provide hotel address city: ");
+      setCity(scan.nextLine());
+      pStmt.setString(1, getCity());
 
-            String sql = "INSERT INTO Hotel VALUES (?, ?, ?)";
-            PreparedStatement pStmt = connection.prepareStatement(sql);
-            pStmt.clearParameters();
+      System.out.print("Please provide hotel address state: ");
+      setState(scan.nextLine());
+      pStmt.setString(2, getState());
 
-            System.out.print("Please provide a hotel name: ");
-            setHotelName(scan.nextLine());
-            pStmt.setString(1, getHotelName());
+      System.out.print("Please provide hotel address zip: ");
+      setZip(Integer.parseInt(scan.nextLine()));
+      pStmt.setInt(3, getZip());
 
-            System.out.print("Please provide a branch ID: ");
-            setBranchID(Integer.parseInt(scan.nextLine()));
-            pStmt.setInt(2, getBranchID());
-
-
-            System.out.print("Please provide a phone number: ");
-            setPhone(scan.nextLine());
-            pStmt.setString(3, getPhone());
-
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
-            finally { pStmt.close(); }
-
-            linkHotelAddress(connection);  // Links HOTEL with ADDRESS entities in HOTEL_ADDRESS relation
-        }
-        else {
-            System.out.println("ERROR: Error loading HOTEL or HOTEL_ADDRESS Table.");
-        }
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
     }
-
-    // Links the current HOTEL and ADDRESS attributes values into the HOTEL_ADDRESS relation:
-    private void linkHotelAddress(Connection connection) throws SQLException{
-
-        String sql = "INSERT INTO Hotel_Address VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement pStmt = connection.prepareStatement(sql);
-        pStmt.clearParameters();
-
-        pStmt.setString(1, getHotelName());
-        pStmt.setInt(2, getBranchID());
-        pStmt.setString(3, getCity());
-        pStmt.setString(4, getState());
-        pStmt.setInt(5, getZip());
-
-        try { pStmt.executeUpdate(); }
-        catch (SQLException e) { throw e; }
-        finally { pStmt.close(); }
+    else {
+      System.out.println("ERROR: Error loading ADDRESS Table.");
     }
+  }
+
+  // Inserts a new hotel into the HOTEL Table, updating ADDRESS and HOTEL_ADDRESS appropriately:
+  public void createHotel(Connection connection) throws SQLException {
+
+    Scanner scan = new Scanner(System.in);
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs1 = dmd.getTables(null, null, "HOTEL", null);
+    ResultSet rs2 = dmd.getTables(null, null, "HOTEL_ADDRESS", null);
+
+    // Must successfully locate HOTEL and HOTEL_ADDRESS before proceeding:
+    if (rs1.next() && rs2.next()){
+
+      createAddress(connection, scan);      // Creates an address to link HOTEL with ADDRESS
+
+      String sql = "INSERT INTO Hotel VALUES (?, ?, ?)";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
+
+      System.out.print("Please provide a hotel name: ");
+      setHotelName(scan.nextLine());
+      pStmt.setString(1, getHotelName());
+
+      System.out.print("Please provide a branch ID: ");
+      setBranchID(Integer.parseInt(scan.nextLine()));
+      pStmt.setInt(2, getBranchID());
+
+
+      System.out.print("Please provide a phone number: ");
+      setPhone(scan.nextLine());
+      pStmt.setString(3, getPhone());
+
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
+
+      linkHotelAddress(connection);  // Links HOTEL with ADDRESS entities in HOTEL_ADDRESS relation
+
+      do {
+        createRoom(connection);
+        System.out.println("Would you like to add another room type to this hotel (Y, N): ");
+      } while ((String.valueOf(scan.next())).toUpperCase().equals("Y"));
+    }
+    else {
+      System.out.println("ERROR: Error loading HOTEL or HOTEL_ADDRESS Table.");
+    }
+  }
+
+  // Inserts a new room into the ROOM Table, linking the weak entity with the HOTEL strong entity:
+  public void createRoom(Connection connection) throws SQLException {
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs1 = dmd.getTables(null, null, "ROOM", null);
+    ResultSet rs2 = dmd.getTables(null, null, "HOTEL_ROOMS", null);
+
+    if (rs1.next() && rs2.next()){
+
+      String sql = "INSERT INTO Room VALUES (?, ?, ?, ?)";
+      PreparedStatement pStmt = connection.prepareStatement(sql);
+      pStmt.clearParameters();
+
+      System.out.print("Please provide the room type a name: ");
+      setType(scan.nextLine());
+      pStmt.setString(1, getType());
+
+      System.out.print("Please provide a guest capacity for this type: ");
+      setCapacity(scan.nextInt());
+      pStmt.setInt(2, getCapacity());
+
+      try { pStmt.executeUpdate(); }
+      catch (SQLException e) { throw e; }
+      finally { pStmt.close(); }
+
+      linkHotelRoom(connection);
+    }
+    else {
+      System.out.println("ERROR: Error loading ROOM or HOTEL_ROOMS Table.");
+    }
+  }
+
+  // Prompts user to provide existing hotel and branch_ID to add as many room types as necessary:
+  public void giveHotelRooms(Connection connection) throws SQLException {
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "HOTEL", null);
+
+    // Must successfully locate HOTEL and HOTEL_ADDRESS before proceeding:
+    if (rs.next()){
+
+      System.out.print("Please provide an existing hotel name: ");
+      setHotelName(scan.nextLine());
+      pStmt.setString(1, getHotelName());
+
+      System.out.print("Please provide the existing hotel branch ID: ");
+      setBranchID(Integer.parseInt(scan.nextLine()));
+      pStmt.setInt(2, getBranchID());
+
+      // Loop to create room types and link to Hotel:
+      do {
+        createRoom(connection);
+        System.out.println("Would you like to add another room type to this hotel (Y, N): ");
+      } while ((String.valueOf(scan.next())).toUpperCase().equals("Y"));
+    }
+    else {
+      System.out.println("ERROR: Error loading HOTEL Table.");
+    }
+  }
+
+  // Links the current HOTEL and ADDRESS attributes values into the HOTEL_ADDRESS relation:
+  private void linkHotelAddress(Connection connection) throws SQLException{
+
+    String sql = "INSERT INTO Hotel_Address VALUES (?, ?, ?, ?, ?)";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    pStmt.setString(1, getHotelName());
+    pStmt.setInt(2, getBranchID());
+    pStmt.setString(3, getCity());
+    pStmt.setString(4, getState());
+    pStmt.setInt(5, getZip());
+
+    try { pStmt.executeUpdate(); }
+    catch (SQLException e) { throw e; }
+    finally { pStmt.close(); }
+  }
+
+  // Links the current HOTEL and ROOM attributes values into the HOTEL_ROOMS relation:
+  private void linkHotelRoom(Connection connection) throws SQLException{
+
+    String sql = "INSERT INTO Hotel_Rooms VALUES (?, ?, ?, ?)";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    System.out.print("Please enter the number of rooms the hotel contains of type %s: ", getType());
+    setQuantity(scan.nextInt());
+
+    pStmt.setString(1, getHotelName());
+    pStmt.setInt(2, getBranchID());
+    pStmt.setString(3, getType());
+    pStmt.setInt(4, getQuantity());
+
+    try { pStmt.executionUpdate(); }
+    catch (SQLException e) { throw e; }
+    finally { pStmt.close(); }
+  }
 
   ///////////////////////////////////////////////////////////////////////////////
   //                            Getter and Setter Methods                      //
