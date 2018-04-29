@@ -716,7 +716,7 @@ public class HotelDatabase {
   // Finds the available reservation(s) for a customer given their CID:
   public void searchCustomerReservations(Connection connection, int CID) throws SQLException {
 
-    String sql = "SELECT res_num FROM RESERVATION WHERE ?";
+    String sql = "SELECT res_num FROM RESERVATION WHERE c_ID = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
 
@@ -725,13 +725,60 @@ public class HotelDatabase {
 
     try {
 
-      System.out.printf("  Reservations for C_ID: %d\n", getCID());
+      System.out.printf("  Reservations for C_ID (%d):\n", getCID());
       System.out.println("+------------------------------------------------------------------------------+");
 
       ResultSet rs = pStmt.executeQuery();
 
       while (rs.next()) {
         System.out.println(rs.getInt(1));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all available reservation(s) for a hotel given its name and branch ID with a date filter:
+  public void searchHotelWDate(Connection connection, String hotel_name, int branchID, Date checkIn, Date checkOut){
+    String sql = "SELECT c_id, res_num, check_in, check_out FROM BOOKING WHERE hotel_name = ? AND branch_num = ? AND check_in >= ? AND check_out <= ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setHotelName(hotel_name);
+    pStmt.setString(1, getHotelName());
+    setBranchID(branchID);
+    pStmt.setInt(2, getBranchID());
+
+    if (checkIn == null && checkOut == null){
+      pStmt.setDate(3, java.sql.Date.valueOf("2000-01-01"));
+      pStmt.setDate(4, java.sql.Date.valueOf("3000-01-01"));
+    }
+    else if (checkIn == null){
+      pStmt.setDate(3, checkIn);
+      pStmt.setDate(4, java.sql.Date.valueOf("3000-01-01"));
+    }
+    else if (checkOut == null){
+      pStmt.setDate(3, java.sql.Date.valueOf("2000-01-01"));
+      pStmt.setDate(4, checkOut);
+    }
+    else {
+      pStmt.setDate(3, checkIn);
+      pStmt.setDate(4, checkOut);
+    }
+
+    try {
+
+      System.out.printf("  Reservations for %S, branch ID (%d): \n", getHotelName(), getBranchID());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.next()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+        System.out.println("Reservation DATES: " + rs.getDate(3) + " TO " + rs.getDate(4));
       }
     }
     catch (SQLException e) { throw e; }
