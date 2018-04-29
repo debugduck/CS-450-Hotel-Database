@@ -716,7 +716,7 @@ public class HotelDatabase {
   // Finds the available reservation(s) for a customer given their CID:
   public void searchCustomerReservations(Connection connection, int CID) throws SQLException {
 
-    String sql = "SELECT res_num FROM RESERVATION WHERE c_ID = ?";
+    String sql = "SELECT res_num FROM Reservation WHERE c_ID = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
 
@@ -742,8 +742,9 @@ public class HotelDatabase {
   }
 
   // Finds all available reservation(s) for a hotel given its name and branch ID with a date filter:
-  public void searchHotelWDate(Connection connection, String hotel_name, int branchID, Date checkIn, Date checkOut){
-    String sql = "SELECT c_id, res_num, check_in, check_out FROM BOOKING WHERE hotel_name = ? AND branch_num = ? AND check_in >= ? AND check_out <= ?";
+  public void searchHotelReservations(Connection connection, String hotel_name, int branchID, Date checkIn, Date checkOut){
+
+    String sql = "SELECT c_id, res_num, check_in, check_out FROM Booking WHERE hotel_name = ? AND branch_ID = ? AND check_in >= Convert(datetime, ?) AND check_out <= Convert(datetime, ?)";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
 
@@ -777,8 +778,78 @@ public class HotelDatabase {
       ResultSet rs = pStmt.executeQuery();
 
       while (rs.next()) {
-        System.out.println(rs.getString(1) + " " + rs.getInt(2));
-        System.out.println("Reservation DATES: " + rs.getDate(3) + " TO " + rs.getDate(4));
+        System.out.println(" " + rs.getString(1) + " " + rs.getInt(2));
+        System.out.println("    Reservation DATES: " + rs.getDate(3) + " TO " + rs.getDate(4));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all availabilities and pricelistings for a particular type of room at a specified hotel within a date range:
+  public void searchAvailabilityType(Connection connection, String hotel_name, int branchID, String type, Date from, Date to){
+
+    String sql = "SELECT num_available, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type = ? AND date_from >= Convert(datetime, ?) AND date_to <= Convert(datetime, ?)";
+
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setHotelName(hotel_name);
+    pStmt.setString(1, getHotelName());
+    setBranchID(branchID);
+    pStmt.setInt(2, getBranchID());
+    setType(type);
+    pStmt.setString(3, getType());
+    pStmt.setDate(4, from);
+    pStmt.setDate(5, to);
+
+    try {
+
+      System.out.printf("  Availiabilities for %S type at %S, branch ID (%d): \n", getType(), getHotelName(), getBranchID());
+      System.out.printf("  Date Listing: " + String.valueOf(from) + " TO " + String.valueOf(to) + "\n");
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.next()) {
+        System.out.println(rs.getInt(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all availabilities and pricelistings for ALL types of rooms at a specified hotel within a date range:
+  public void searchAvailability(Connection connection, String hotel_name, int branchID, Date from, Date to){
+
+    String sql = "SELECT type, num_available, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND date_from >= Convert(datetime, ?) AND date_to <= Convert(datetime, ?)";
+
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setHotelName(hotel_name);
+    pStmt.setString(1, getHotelName());
+    setBranchID(branchID);
+    pStmt.setInt(2, getBranchID());
+    pStmt.setDate(3, from);
+    pStmt.setDate(4, to);
+
+    try {
+
+      System.out.printf("  Availiabilities at %S, branch ID (%d): \n", getHotelName(), getBranchID());
+      System.out.printf("  Date Listing: " + String.valueOf(from) + " TO " + String.valueOf(to) + "\n");
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.next()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2) + " " + rs.getInt(3));
       }
     }
     catch (SQLException e) { throw e; }
