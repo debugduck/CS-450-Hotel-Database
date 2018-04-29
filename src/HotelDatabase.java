@@ -67,7 +67,7 @@ import java.math.*;
 //      getString(string)            -> Returns the value of the designated column name in string
 //      getInt(i)                    -> Returns the ith attribute selected, when Integer
 //      executeUpdate()              -> used to execute when SQL stmt does not return records
-//      executeQuery()              -> used to execute when SQL stmt returns records
+//      executeQuery()               -> used to execute when SQL stmt returns records
 //      next()                       -> read next row of results from Result Set
 //      previous()                   -> read one row back from current row in Result Set
 //      absolute(i)                  -> reads the row with the specified number i in Result Set
@@ -120,12 +120,40 @@ public class HotelDatabase {
   private Date check_in;
   private Date check_out;
 
+  // DB Columns:
+  private final ArrayList<String> HOTEL;
+  private final ArrayList<String> ROOM;
+  private final ArrayList<String> CUSTOMER;
+  private final ArrayList<String> RESERVATION;
+  private final ArrayList<String> HOTEL_ADDRESS;
+  private final ArrayList<String> HOTEL_ROOM;
+  private final ArrayList<String> BOOKING;
+  private final ArrayList<String> INFORMATION;
+  private final ArrayList<String> NUMBERS;
+  private final ArrayList<String> DATES;
+  private final ArrayList<ArrayList<String>> ALL;
+
   ///////////////////////////////////////////////////////////////////////////////
   //                                  Methods                                  //
   ///////////////////////////////////////////////////////////////////////////////
 
   // Default constructor:
-  public HotelDatabase() {}
+  public HotelDatabase() {
+
+    this.HOTEL = new ArrayList<String>(Arrays.asList("HOTEL", "HOTEL_NAME", "BRANCH_ID", "PHONE"));
+    this.ROOM = new ArrayList<String>(Arrays.asList("ROOM", "HOTEL_NAME", "BRANCH_ID", "TYPE", "CAPACITY"));
+    this.CUSTOMER = new ArrayList<String>(Arrays.asList("CUSTOMER", "C_ID", "FIRST_NAME", "LAST_NAME", "AGE", "GENDER"));
+    this.RESERVATION = new ArrayList<String>(Arrays.asList("RESERVATION", "C_ID", "RES_NUM", "PARTY_SIZE", "COST"));
+    this.HOTEL_ADDRESS = new ArrayList<String>(Arrays.asList("HOTEL_ADDRESS", "HOTEL_NAME", "BRANCH_ID", "CITY", "STATE", "ZIP"));
+    this.HOTEL_ROOM = new ArrayList<String>(Arrays.asList("HOTEL_ROOM", "HOTEL_NAME", "BRANCH_ID", "TYPE", "QUANTITY"));
+    this.BOOKING = new ArrayList<String>(Arrays.asList("BOOKING", "C_ID", "RES_NUM", "CHECK_IN", "CHECK_OUT", "HOTEL_NAME", "BRANCH_ID", "TYPE"));
+    this.INFORMATION = new ArrayList<String>(Arrays.asList("INFORMATION", "HOTEL_NAME", "BRANCH_ID", "TYPE", "DATE_FROM", "DATE_TO", "NUM_AVAILABLE", "PRICE"));
+    this.NUMBERS = new ArrayList<String>(Arrays.asList("BRANCH_ID", "CAPACITY", "C_ID", "AGE", "RES_NUM", "PARTY_SIZE", "COST", "ZIP", "QUANTITY", "NUM_AVAILABLE", "PRICE"));
+    this.DATES = new ArrayList<String>(Arrays.asList("CHECK_IN", "CHECK_OUT", "DATE_FROM", "DATE_TO"));
+
+    // INDEXING:                                                0     1       2           3             4             5         6           7
+    this.ALL = new ArrayList<ArrayList<String>>(Arrays.asList(HOTEL, ROOM, CUSTOMER, RESERVATION, HOTEL_ADDRESS, HOTEL_ROOM, BOOKING, INFORMATION));
+  }
 
   // Runs the program from the command line:
   public static void main(String[] args) {
@@ -167,6 +195,79 @@ public class HotelDatabase {
     catch (SQLException e) { e.printStackTrace(); }
 
     return connection;
+  }
+
+  public void showTable(Connection connection) throws SQLException {
+
+    Scanner scan = new Scanner(System.in);
+    int tableIndex = -1;
+
+    while (tableIndex == -1){
+
+      printViewTable();
+
+      // Narrow which table the user wants to see:
+      switch (String.valueOf(scan.next()).toUpperCase()){
+        case "H":
+          tableIndex = 0;
+          break;
+        case "R":
+          tableIndex = 1;
+          break;
+        case "C":
+          tableIndex = 2;
+          break;
+        case "V":
+          tableIndex = 3;
+          break;
+        case "HA":
+          tableIndex = 4;
+          break;
+        case "HR":
+          tableIndex = 5;
+          break;
+        case "BK":
+          tableIndex = 6;
+          break;
+        case "IN":
+          tableIndex = 7;
+          break;
+        default:
+          System.out.println("ERROR: Invalid Table. Please choose from the tables below: ");
+      }
+    }
+
+    // Retreive all the rows from that table:
+    String sql = "SELECT * FROM ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+    pStmt.setString(1, ALL.get(tableIndex).get(0));
+
+    try {
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rset.next()) {
+
+        for (int i = 1; i < ALL.get(tableIndex).size(); i++){
+
+          // Need to make distinction between values that are Strings, Ints, or Dates:
+          if (NUMBERS.contains(ALL.get(tableIndex).get(i))){
+            System.out.print(rset.getInt(ALL.get(tableIndex).get(i)));
+          }
+          else if (DATES.contains(ALL.get(tableIndex).get(i))){
+            System.out.print(rset.getDate(ALL.get(tableIndex).get(i)));
+          }
+          else {
+            System.out.print(rset.getString(ALL.get(tableIndex).get(i)));
+          }
+          System.out.print(" ");
+        }
+        System.out.println();
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally { pStmt.close(); }
   }
 
   // Closes a DB Connection:
@@ -578,7 +679,7 @@ public class HotelDatabase {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
-  //                                Command Line GUI                           //
+  //                              Command Line GUI                             //
   ///////////////////////////////////////////////////////////////////////////////
 
   // Prints the main menu interfac for user display:
@@ -655,7 +756,7 @@ public class HotelDatabase {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
-  //                            Getter and Setter Methods                      //
+  //                          Getter and Setter Methods                        //
   ///////////////////////////////////////////////////////////////////////////////
 
   public String getCity() {
