@@ -247,19 +247,19 @@ public class HotelDatabase {
 
       ResultSet rs = pStmt.executeQuery();
 
-      while (rset.next()) {
+      while (rs.next()) {
 
         for (int i = 1; i < ALL.get(tableIndex).size(); i++){
 
           // Need to make distinction between values that are Strings, Ints, or Dates:
           if (NUMBERS.contains(ALL.get(tableIndex).get(i))){
-            System.out.print(rset.getInt(ALL.get(tableIndex).get(i)));
+            System.out.print(rs.getInt(ALL.get(tableIndex).get(i)));
           }
           else if (DATES.contains(ALL.get(tableIndex).get(i))){
-            System.out.print(rset.getDate(ALL.get(tableIndex).get(i)));
+            System.out.print(rs.getDate(ALL.get(tableIndex).get(i)));
           }
           else {
-            System.out.print(rset.getString(ALL.get(tableIndex).get(i)));
+            System.out.print(rs.getString(ALL.get(tableIndex).get(i)));
           }
           System.out.print(" ");
         }
@@ -267,7 +267,10 @@ public class HotelDatabase {
       }
     }
     catch (SQLException e) { throw e; }
-    finally { pStmt.close(); }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
   }
 
   // Closes a DB Connection:
@@ -313,7 +316,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -343,7 +349,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -373,7 +382,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -403,7 +415,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -433,7 +448,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -459,7 +477,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading CUSTOMER Table.");
@@ -492,7 +513,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading ADDRESS Table.");
@@ -532,7 +556,11 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs1.close();
+        rs2.close();
+      }
 
       linkHotelAddress(connection);  // Links HOTEL with ADDRESS entities in HOTEL_ADDRESS relation
 
@@ -571,7 +599,10 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs.close();
+      }
     }
     else {
       System.out.println("ERROR: Error loading HOTEL Table.");
@@ -601,7 +632,11 @@ public class HotelDatabase {
 
       try { pStmt.executeUpdate(); }
       catch (SQLException e) { throw e; }
-      finally { pStmt.close(); }
+      finally {
+        pStmt.close();
+        rs1.close();
+        rs2.close();
+      }
 
       linkHotelRoom(connection, scan);
     }
@@ -678,6 +713,34 @@ public class HotelDatabase {
     finally { pStmt.close(); }
   }
 
+  // Finds the available reservation(s) for a customer given their CID:
+  public void searchCustomerReservations(Connection connection, int CID) throws SQLException {
+
+    String sql = "SELECT res_num FROM RESERVATION WHERE ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setCID(c_ID);
+    pStmt.setInt(1, getCID());
+
+    try {
+
+      System.out.printf("  Reservations for C_ID: %d\n", getCID());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.next()) {
+        System.out.println(rs.getInt(1));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
   ///////////////////////////////////////////////////////////////////////////////
   //                              Command Line GUI                             //
   ///////////////////////////////////////////////////////////////////////////////
@@ -697,7 +760,6 @@ public class HotelDatabase {
     System.out.print(" > ");
   }
 
-  // Prints the interface for tables available for user display:
   public void printViewTables() {
 
     System.out.println("\n                                  VIEW TABLES");
