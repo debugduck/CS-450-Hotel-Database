@@ -18,7 +18,8 @@ DROP TABLE Booking        CASCADE CONSTRAINTS;
 DROP TABLE Information    CASCADE CONSTRAINTS;
 
 -- --------------------------------------------------------------------------------
--- Create Tables:
+--                                    TABLES                                     --
+-----------------------------------------------------------------------------------   
 
 CREATE TABLE Address(
 
@@ -127,5 +128,132 @@ CREATE TABLE Information(
       ON DELETE CASCADE,
     FOREIGN KEY (date_from, date_to) REFERENCES DateList (date_from, date_to)
       ON DELETE CASCADE);
+
+-- --------------------------------------------------------------------------------
+--                                   TRIGGERS                                    --
+-- --------------------------------------------------------------------------------
+
+-- Trigger to check whether the reservation party size is correct:
+-- | Assumes an entry has been added to Reservation w/ cost = 0
+
+CREATE TRIGGER withinCapacity
+  BEFORE INSERT ON Booking
+  FOR EACH ROW
+
+  DECLARE
+    type_cap  INTEGER;
+    party_s   INTEGER;
+    overcap   EXCEPTION;
+
+  BEGIN
+    SELECT R.capacity INTO type_cap
+    FROM Room R
+    WHERE     R.hotel_name = :NEW.hotel_name
+          AND R.branch_ID = :NEW.branch_ID
+          AND R.type = :NEW.type;
+
+    SELECT RV.party_size INTO party_s
+    FROM Reservation RV
+    WHERE     RV.c_ID = :NEW.c_ID
+          AND RV.res_num = :NEW.res_num;
+
+    IF party_s > type_cap THEN
+      RAISE overcap;
+    END IF;
+
+  EXCEPTION
+    WHEN overcap THEN
+      Raise_application_error(-20001, 'ERROR: ROOM cannot accomodate PARTY SIZE.');
+  END;
+/
+
+-- --------------------------------------------------------------------------------
+
+-- Trigger to check whether the room type requested is available under the dates:
+
+CREATE TRIGGER isAvailable
+  BEFORE INSERT ON Booking
+  FOR EACH ROW
+
+  DECLARE
+    avai_days INTEGER;
+    no_room   EXCEPTION;
+
+  BEGIN
+
+    SELECT COUNT(*) INTO avai_days
+    FROM Information I
+    WHERE     I.date_from >= :NEW.check_in
+          AND I.date_to <= :NEW.check_out
+          AND I.hotel_name = :NEW.hotel_name
+          AND I.branch_ID = :NEW.branch_ID
+          AND I.type = :NEW.type
+          AND I.num_avail = 0;
+
+    IF avai_days = 0 THEN
+
+      UPDATE Information
+      SET num_avail = num_avail - 1
+      WHERE     date_from >= :NEW.check_in
+            AND date_to <= :NEW.check_out
+            AND hotel_name = :NEW.hotel_name
+            AND branch_ID = :NEW.branch_ID
+            AND type = :NEW.type;
+
+    ELSE
+      RAISE no_room;
+    END IF;
+
+  EXCEPTION
+    WHEN no_room THEN
+      Raise_application_error(-20001, 'ERROR: No ROOMS of this TYPE available.');
+  END;
+/
+
+-- --------------------------------------------------------------------------------
+
+-- Trigger to calculate the TOTAL COST of stay at a HOTEL:
+-- | Assumes the party size is correct
+-- | Assumes there are rooms available
+
+CREATE TRIGGER calculateCost
+  AFTER INSERT ON Booking
+  FOR EACH ROW
+
+  DECLARE
+    total   INTEGER;
+
+  BEGIN
+    SELECT SUM(I.price) INTO total
+    FROM Information I
+    WHERE     I.date_from >= :NEW.check_in
+          AND I.date_to <= :NEW.check_out;
+
+    UPDATE Reservation
+    SET cost = total
+    WHERE c_ID = :NEW.c_ID AND res_num = :NEW.res_num;
+
+    DBMS_OUTPUT.PUT_LINE('Calculated COSTT for RESERVATION.');
+  END;
+/
+
+-- --------------------------------------------------------------------------------
+
+-- Trigger to return the availablility of room types when a booking is deleted:
+
+CREATE TRIGGER nowAvailable
+  AFTER DELETE ON Booking
+  FOR EACH ROW
+
+  BEGIN
+    UPDATE Information
+    SET num_avail = num_avail + 1
+    WHERE     date_from >= :OLD.check_in
+          AND date_to <= :OLD.check_out
+          AND hotel_name = :OLD.hotel_name
+          AND branch_ID = :OLD.branch_ID
+          AND type = :OLD.type;
+  END;
+/
 
 -- --------------------------------------------------------------------------------
