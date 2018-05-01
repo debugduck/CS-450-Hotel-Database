@@ -867,6 +867,215 @@ public class HotelDatabase {
     }
   }
 
+  // Finds all hotels within a given city:
+  public void searchAreaCity(Connection connection, String city){
+
+    String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setCity(city);
+    pStmt.setString(1, getCity());
+
+    try {
+
+      System.out.printf("  Hotels in %s:\n", getCity());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all hotels within a given state:
+  public void searchAreaState(Connection connection, String state){
+
+    String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE state = ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setState(state);
+    pStmt.setString(1, getState());
+
+    try {
+
+      System.out.printf("  Hotels in %s:\n", getState());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all hotels within a given zip:
+  public void searchAreaCity(Connection connection, int zip){
+
+    String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE zip = ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setZip(zip);
+    pStmt.setInt(1, getZip());
+
+    try {
+
+      System.out.printf("  Hotels in %d:\n", getZip());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all hotels within a given area; used for combinations for two:
+  public void searchArea(Connection connection, String city, String state, int zip){
+
+    String sql1 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ?";
+    String sql2 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE state = ?";
+    String sql3 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE zip = ?";
+
+    // City and State combination:
+    if (city != null && state != null){
+
+      PreparedStatement pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql2);
+      pStmt.clearParameters();
+
+      setCity(city);
+      pStmt.setString(1, getCity());
+      setState(state);
+      pStmt.setString(2, getState());
+    }
+
+    // City and ZIP combination:
+    else if (city != null){
+
+      PreparedStatement pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql3);
+      pStmt.clearParameters();
+
+      setCity(city);
+      pStmt.setString(1, getCity());
+      setZip(zip);
+      pStmt.setInt(2, getZip());
+    }
+
+    // State and ZIP combination:
+    else {
+
+      PreparedStatement pStmt = connection.prepareStatement(sql2 + " INTERSECT " + sql3);
+      pStmt.clearParameters();
+
+      setState(state);
+      pStmt.setString(1, getState());
+      setZip(zip);
+      pStmt.setInt(2, getZip());
+    }
+
+    try {
+
+      System.out.println("  Hotels in area:");
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+      String result;
+
+      while (rs.nextLine()) {
+
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all hotels within the full address:
+  public void searchAreaFull(Connection connection, String city, String state, int zip){
+
+    String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ? AND state = ? AND zip = ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setCity(city);
+    pStmt.setString(1, getCity());
+    setState(state);
+    pStmt.setString(2, getState());
+    setZip(zip);
+    pStmt.setInt(3, getZip());
+
+    try {
+
+      System.out.println("  Hotels in area:");
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
+  // Finds all the room types available at a specified hotel:
+  public void searchHotelRoomTypes(Connection connection, String hotel_name, int branch_ID){
+
+    String sql = "SELECT type, capacity FROM Hotel_Rooms WHERE hotel_name = ? AND branch_ID = ?";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setHotelName(hotel_name);
+    pStmt.setString(1, getHotelName());
+    setBranchID(branch_ID);
+    pStmt.setInt(2, getBranchID());
+
+    try {
+
+      System.out.printf("  Room types available at %S, branch ID (%d)", getHotelName(), getBranchID());
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      ResultSet rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2));
+      }
+    }
+    catch (SQLException e) { throw e; }
+    finally {
+      pStmt.close();
+      rs.close();
+    }
+  }
+
   ///////////////////////////////////////////////////////////////////////////////
   //                              Command Line GUI                             //
   ///////////////////////////////////////////////////////////////////////////////
