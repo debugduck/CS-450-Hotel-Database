@@ -1,20 +1,29 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /* PasswordDemo.java requires no other files. */
 
-public class DatabaseGUI extends JPanel implements ActionListener {
+public class SignIn extends JPanel implements ActionListener {
     private static String SUBMIT = "submit";
     private static String HELP = "help";
+    private static String ADD = "add";
+    private static String VIEW = "view";
+    private static String SEARCH = "search";
+    private static String DELETE = "delete";
+    private static String UPDATE = "update";
 
     private JFrame controllingFrame; //needed for dialogs
     private JTextField usernameField;
     private JPasswordField passwordField;
+    private HotelDatabase db;
+    private Connection connection;
 
 
-    public DatabaseGUI(JFrame f) {
+    public SignIn(JFrame f) {
         //Use the default FlowLayout.
         controllingFrame = f;
 
@@ -25,6 +34,7 @@ public class DatabaseGUI extends JPanel implements ActionListener {
         passwordField = new JPasswordField(10);
         passwordField.setActionCommand(SUBMIT);
         passwordField.addActionListener(this);
+        db = new HotelDatabase();
 
         JLabel passwordLabel = new JLabel("Enter the password: ");
         passwordLabel.setLabelFor(passwordField);
@@ -67,19 +77,17 @@ public class DatabaseGUI extends JPanel implements ActionListener {
         String cmd = e.getActionCommand();
 
         if (SUBMIT.equals(cmd)) { //Process the password.
-            char[] input = passwordField.getPassword();
-            if (isPasswordCorrect(input)) {
-                JOptionPane.showMessageDialog(controllingFrame,
-                        "Success! You typed the right password.");
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            connection = db.getConnection(username, password);
+            if (connection != null) {
+                showMenu(connection);
             } else {
                 JOptionPane.showMessageDialog(controllingFrame,
                         "Invalid password. Try again.",
                         "Error Message",
                         JOptionPane.ERROR_MESSAGE);
             }
-
-            //Zero out the possible password, for security.
-            Arrays.fill(input, '0');
 
             passwordField.selectAll();
             resetFocus();
@@ -92,25 +100,48 @@ public class DatabaseGUI extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Checks the passed-in array against the correct password.
-     * After this method returns, you should invoke eraseArray
-     * on the passed-in array.
-     */
-    private static boolean isPasswordCorrect(char[] input) {
-        boolean isCorrect = true;
-        char[] correctPassword = { 'b', 'u', 'g', 'a', 'b', 'o', 'o' };
+    protected void showMenu(Connection connection) {
+        //Create everything.
+        //usernameField.setActionCommand(SUBMIT);
+        //controllingFrame = new JFrame();
+        //JLabel passwordLabel = new JLabel("Enter the password: ");
+        //passwordLabel.setLabelFor(passwordField);
 
-        if (input.length != correctPassword.length) {
-            isCorrect = false;
-        } else {
-            isCorrect = Arrays.equals (input, correctPassword);
-        }
+        //JLabel usernameLabel = new JLabel("Enter the username: ");
+        //usernameLabel.setLabelFor(usernameField);
 
-        //Zero out the password.
-        Arrays.fill(correctPassword,'0');
+        JComponent buttonPane = createMainMenuButtons();
 
-        return isCorrect;
+        add(buttonPane);
+
+    }
+
+    protected JComponent createMainMenuButtons() {
+        JPanel p = new JPanel(new GridLayout(0,1));
+        JButton viewTablesButton = new JButton("View Tables");
+        JButton addRecordsButton = new JButton("Add Records");
+        JButton updateRecordsButton = new JButton("Update Records");
+        JButton deleteRecordsButton = new JButton("Delete Records");
+        JButton searchRecordsButton = new JButton("Search Records");
+
+        viewTablesButton.setActionCommand(VIEW);
+        addRecordsButton.setActionCommand(ADD);
+        updateRecordsButton.setActionCommand(UPDATE);
+        deleteRecordsButton.setActionCommand(DELETE);
+        searchRecordsButton.setActionCommand(SEARCH);
+        viewTablesButton.addActionListener(this);
+        addRecordsButton.addActionListener(this);
+        updateRecordsButton.addActionListener(this);
+        deleteRecordsButton.addActionListener(this);
+        searchRecordsButton.addActionListener(this);
+
+        p.add(viewTablesButton);
+        p.add(addRecordsButton);
+        p.add(updateRecordsButton);
+        p.add(deleteRecordsButton);
+        p.add(searchRecordsButton);
+
+        return p;
     }
 
     //Must be called from the event dispatch thread.
