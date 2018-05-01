@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
+import java.time.LocalDate;
 import java.math.*;
 
 // Enter at command line when starting Java Application:
@@ -173,6 +174,129 @@ public class HotelDatabase {
         hotelDB.searchCustomerReservations(connection, 1234);
     } catch (SQLException e) {
         e.printStackTrace();
+    }
+    // Populate DateList and assign generic values to price:
+    hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
+  }
+
+  // Creates a list of entries for dates from a start and end date:
+  public void populateDemo(Connetion connection, LocalDate start, LocalDate end) throws SQLException {
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "DateList", null);
+
+    if (rs != null){
+
+      while (!start.isAfter(end)){
+
+        String sql = "INSERT INTO DateList VALUES (to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'))";
+
+        String sql1 = "INSERT INTO Information VALUES('Westin Hotel', 1, 'Single Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 5, 200)";
+        String sql2 = "INSERT INTO Information VALUES('Westin Hotel', 1, 'Traditional Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 10, 300)";
+        String sql3 = "INSERT INTO Information VALUES('Westin Hotel', 1, 'Presidential Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 1, 1000)";
+        String sql4 = "INSERT INTO Information VALUES('Westin Hotel', 2, 'Single Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 5, 200)";
+        String sql5 = "INSERT INTO Information VALUES('Westin Hotel', 2, 'Traditional Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 15, 400)";
+        String sql6 = "INSERT INTO Information VALUES('Westin Hotel', 2, 'Presidential Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 1, 1000)";
+        String sql7 = "INSERT INTO Information VALUES('Ritz Carlton Hotel', 1, 'Traditional Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 20, 800)";
+        String sql8 = "INSERT INTO Information VALUES('Ritz Carlton Hotel', 1, 'Presidential Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 1, 2000)";
+        String sql9 = "INSERT INTO Information VALUES('Ritz Carlton Hotel', 2, 'Traditional Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 25, 1000)";
+        String sql10 = "INSERT INTO Information VALUES('Ritz Carlton Hotel', 2, 'Presidential Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 1, 2000)";
+        String sql11 = "INSERT INTO Information VALUES('Four Seasons Hotel', 1, 'Single Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 10, 350)";
+        String sql12 = "INSERT INTO Information VALUES('Four Seasons Hotel', 1, 'Twin Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 10, 250)";
+
+        PreparedStatement pStmt = connection.prepareSatement(sql);
+        PreparedStatement pStmt1 = connection.prepareStatement(sql1);
+        PreparedStatement pStmt2 = connection.prepareStatement(sql2);
+        PreparedStatement pStmt3 = connection.prepareStatement(sql3);
+        PreparedStatement pStmt4 = connection.prepareStatement(sql4);
+        PreparedStatement pStmt5 = connection.prepareStatement(sql5);
+        PreparedStatement pStmt6 = connection.prepareStatement(sql6);
+        PreparedStatement pStmt7 = connection.prepareStatement(sql7);
+        PreparedStatement pStmt8 = connection.prepareStatement(sql8);
+        PreparedStatement pStmt9 = connection.prepareStatement(sql9);
+        PreparedStatement pStmt10 = connection.prepareStatement(sql10);
+        PreparedStatement pStmt11 = connection.prepareStatement(sql11);
+        PreparedStatement pStmt12 = connection.prepareStatement(sql12);
+
+        pStmt.clearParameters();
+        pStmt1.clearParameters();
+        pStmt2.clearParameters();
+        pStmt3.clearParameters();
+        pStmt4.clearParameters();
+        pStmt5.clearParameters();
+        pStmt6.clearParameters();
+        pStmt7.clearParameters();
+        pStmt8.clearParameters();
+        pStmt9.clearParameters();
+        pStmt10.clearParameters();
+        pStmt11.clearParameters();
+        pStmt12.clearParameters();
+
+        pStmt.setString(1, start);
+        pStmt1.setString(1, start);
+        pStmt2.setString(1, start);
+        pStmt3.setString(1, start);
+        pStmt4.setString(1, start);
+        pStmt5.setString(1, start);
+        pStmt6.setString(1, start);
+        pStmt7.setString(1, start);
+        pStmt8.setString(1, start);
+        pStmt9.setString(1, start);
+        pStmt10.setString(1, start);
+        pStmt11.setString(1, start);
+        pStmt12.setString(1, start);
+
+        start = start.plusDays(1);
+
+        pStmt.setString(2, start);
+        pStmt1.setString(2, start);
+        pStmt2.setString(2, start);
+        pStmt3.setString(2, start);
+        pStmt4.setString(2, start);
+        pStmt5.setString(2, start);
+        pStmt6.setString(2, start);
+        pStmt7.setString(2, start);
+        pStmt8.setString(2, start);
+        pStmt9.setString(2, start);
+        pStmt10.setString(2, start);
+        pStmt11.setString(2, start);
+        pStmt12.setString(2, start);
+
+        try {
+          pStmt.executeUpdate();
+          pStmt1.executeUpdate();
+          pStmt2.executeUpdate();
+          pStmt3.executeUpdate();
+          pStmt4.executeUpdate();
+          pStmt5.executeUpdate();
+          pStmt6.executeUpdate();
+          pStmt7.executeUpdate();
+          pStmt8.executeUpdate();
+          pStmt9.executeUpdate();
+          pStmt10.executeUpdate();
+          pStmt11.executeUpdate();
+          pStmt12.executeUpdate();
+         }
+        catch (SQLException e) { throw e; }
+        finally {
+          pStmt.close();
+          pStmt1.close();
+          pStmt2.close();
+          pStmt3.close();
+          pStmt4.close();
+          pStmt5.close();
+          pStmt6.close();
+          pStmt7.close();
+          pStmt8.close();
+          pStmt9.close();
+          pStmt10.close();
+          pStmt11.close();
+          pStmt12.close();
+        }
+      }
+    }
+    else {
+      System.out.println("ERROR: Error loading CUSTOMER Table.");
     }
   }
 
