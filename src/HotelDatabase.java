@@ -170,7 +170,7 @@ public class HotelDatabase {
     try {
         //hotelDB.showTable(connection);
         //hotelDB.createRoom(connection, scan);
-        hotelDB.searchCustomerReservations(connection, 1234);
+        hotelDB.searchCustomerReservations(connection, 2);
     } catch (SQLException e) {
         e.printStackTrace();
     }
@@ -267,7 +267,7 @@ public class HotelDatabase {
         System.out.println();
       }
     }
-    catch (SQLException e) { throw e; }
+    catch (SQLException e) { e.printStackTrace(); }
     finally {
       pStmt.close();
       if(rs != null) { rs.close(); }
@@ -736,7 +736,7 @@ public class HotelDatabase {
       rs = pStmt.executeQuery();
 
       while (rs.next()) {
-        System.out.println(rs.getInt(1));
+        System.out.println("Reservation number: " + rs.getInt(1));
       }
     }
     catch (SQLException e) { e.printStackTrace(); }

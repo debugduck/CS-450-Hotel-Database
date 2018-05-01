@@ -81,7 +81,8 @@ public class SignIn extends JPanel implements ActionListener {
             String password = passwordField.getText();
             connection = db.getConnection(username, password);
             if (connection != null) {
-                showMenu(connection);
+                MainMenu mm = new MainMenu(controllingFrame);
+                mm.setConnection(connection);
             } else {
                 JOptionPane.showMessageDialog(controllingFrame,
                         "Invalid password. Try again.",
@@ -160,7 +161,7 @@ public class SignIn extends JPanel implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
-        final DatabaseGUI newContentPane = new DatabaseGUI(frame);
+        final SignIn newContentPane = new SignIn(frame);
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
 
