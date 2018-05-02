@@ -165,22 +165,24 @@ public class HotelDatabase {
     Scanner scan = new Scanner(System.in);
 
     // Get the connection:
-    hotelDB.username = "ccecil2";
-    hotelDB.password = "phoogl";
+    hotelDB.username = "anowilat";
+    hotelDB.password = "doopee";
     Connection connection = hotelDB.getConnection(hotelDB.username, hotelDB.password);
     try {
-        //hotelDB.showTable(connection);
+        // Populate DateList and assign generic values to price:
+        //hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
+        //hotelDB.searchArea(connection, "Long Beach", "CA", 94103);
+        hotelDB.showTable(connection);
         //hotelDB.createRoom(connection, scan);
-        hotelDB.searchCustomerReservations(connection, 2);
+        //hotelDB.searchCustomerReservations(connection, 2);
+
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    // Populate DateList and assign generic values to price:
-    hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
   }
 
   // Creates a list of entries for dates from a start and end date:
-  public void populateDemo(Connetion connection, LocalDate start, LocalDate end) throws SQLException {
+  public void populateDemo(Connection connection, LocalDate start, LocalDate end) throws SQLException {
 
     DatabaseMetaData dmd = connection.getMetaData();
     ResultSet rs = dmd.getTables(null, null, "DateList", null);
@@ -204,7 +206,7 @@ public class HotelDatabase {
         String sql11 = "INSERT INTO Information VALUES('Four Seasons Hotel', 1, 'Single Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 10, 350)";
         String sql12 = "INSERT INTO Information VALUES('Four Seasons Hotel', 1, 'Twin Suite', to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'), 10, 250)";
 
-        PreparedStatement pStmt = connection.prepareSatement(sql);
+        PreparedStatement pStmt = connection.prepareStatement(sql);
         PreparedStatement pStmt1 = connection.prepareStatement(sql1);
         PreparedStatement pStmt2 = connection.prepareStatement(sql2);
         PreparedStatement pStmt3 = connection.prepareStatement(sql3);
@@ -232,35 +234,35 @@ public class HotelDatabase {
         pStmt11.clearParameters();
         pStmt12.clearParameters();
 
-        pStmt.setString(1, start);
-        pStmt1.setString(1, start);
-        pStmt2.setString(1, start);
-        pStmt3.setString(1, start);
-        pStmt4.setString(1, start);
-        pStmt5.setString(1, start);
-        pStmt6.setString(1, start);
-        pStmt7.setString(1, start);
-        pStmt8.setString(1, start);
-        pStmt9.setString(1, start);
-        pStmt10.setString(1, start);
-        pStmt11.setString(1, start);
-        pStmt12.setString(1, start);
+        pStmt.setString(1, start.toString());
+        pStmt1.setString(1, start.toString());
+        pStmt2.setString(1, start.toString());
+        pStmt3.setString(1, start.toString());
+        pStmt4.setString(1, start.toString());
+        pStmt5.setString(1, start.toString());
+        pStmt6.setString(1, start.toString());
+        pStmt7.setString(1, start.toString());
+        pStmt8.setString(1, start.toString());
+        pStmt9.setString(1, start.toString());
+        pStmt10.setString(1, start.toString());
+        pStmt11.setString(1, start.toString());
+        pStmt12.setString(1, start.toString());
 
         start = start.plusDays(1);
 
-        pStmt.setString(2, start);
-        pStmt1.setString(2, start);
-        pStmt2.setString(2, start);
-        pStmt3.setString(2, start);
-        pStmt4.setString(2, start);
-        pStmt5.setString(2, start);
-        pStmt6.setString(2, start);
-        pStmt7.setString(2, start);
-        pStmt8.setString(2, start);
-        pStmt9.setString(2, start);
-        pStmt10.setString(2, start);
-        pStmt11.setString(2, start);
-        pStmt12.setString(2, start);
+        pStmt.setString(2, start.toString());
+        pStmt1.setString(2, start.toString());
+        pStmt2.setString(2, start.toString());
+        pStmt3.setString(2, start.toString());
+        pStmt4.setString(2, start.toString());
+        pStmt5.setString(2, start.toString());
+        pStmt6.setString(2, start.toString());
+        pStmt7.setString(2, start.toString());
+        pStmt8.setString(2, start.toString());
+        pStmt9.setString(2, start.toString());
+        pStmt10.setString(2, start.toString());
+        pStmt11.setString(2, start.toString());
+        pStmt12.setString(2, start.toString());
 
         try {
           pStmt.executeUpdate();
@@ -874,7 +876,7 @@ public class HotelDatabase {
   public void searchHotelReservations(Connection connection, String hotel_name, int branchID, java.sql.Date checkIn, java.sql.Date checkOut) throws SQLException {
 
     ResultSet rs = null;
-    String sql = "SELECT c_id, res_num, check_in, check_out FROM Booking WHERE hotel_name = ? AND branch_ID = ? AND check_in >= Convert(datetime, ?) AND check_out <= Convert(datetime, ?)";
+    String sql = "SELECT c_id, res_num, check_in, check_out FROM Booking WHERE hotel_name = ? AND branch_ID = ? AND check_in >= to_date(?, 'YYYY-MM-DD') AND check_out <= to_date(?, 'YYYY-MM-DD')";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
 
@@ -923,7 +925,7 @@ public class HotelDatabase {
   public void searchAvailabilityType(Connection connection, String hotel_name, int branchID, String type, java.sql.Date from, java.sql.Date to) throws SQLException {
 
     ResultSet rs = null;
-    String sql = "SELECT num_available, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type = ? AND date_from >= Convert(datetime, ?) AND date_to <= Convert(datetime, ?)";
+    String sql = "SELECT num_avail, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type = ? AND date_from >= to_date(?, 'YYYY-MM-DD') AND date_to <= to_date(?, 'YYYY-MM-DD')";
 
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -945,7 +947,7 @@ public class HotelDatabase {
 
       rs = pStmt.executeQuery();
 
-      while (rs.next()) {
+      while(rs.first()) {
         System.out.println(rs.getInt(1) + " " + rs.getInt(2));
       }
     }
@@ -960,7 +962,7 @@ public class HotelDatabase {
   public void searchAvailability(Connection connection, String hotel_name, int branchID, java.sql.Date from, java.sql.Date to) throws SQLException {
 
     ResultSet rs = null;
-    String sql = "SELECT type, num_available, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND date_from >= Convert(datetime, ?) AND date_to <= Convert(datetime, ?)";
+    String sql = "SELECT type, num_avail, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND date_from >= Convert(datetime, ?) AND date_to <= Convert(datetime, ?)";
 
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -992,8 +994,9 @@ public class HotelDatabase {
   }
 
   // Finds all hotels within a given city:
-  public void searchAreaCity(Connection connection, String city){
+  public void searchAreaCity(Connection connection, String city) throws SQLException {
 
+    ResultSet rs = null;
     String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -1006,22 +1009,23 @@ public class HotelDatabase {
       System.out.printf("  Hotels in %s:\n", getCity());
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
     }
-    catch (SQLException e) { throw e; }
+    catch (SQLException e) { e.printStackTrace(); }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 
   // Finds all hotels within a given state:
-  public void searchAreaState(Connection connection, String state){
+  public void searchAreaState(Connection connection, String state) throws SQLException {
 
+    ResultSet rs = null;
     String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE state = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -1034,9 +1038,9 @@ public class HotelDatabase {
       System.out.printf("  Hotels in %s:\n", getState());
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
     }
@@ -1048,8 +1052,9 @@ public class HotelDatabase {
   }
 
   // Finds all hotels within a given zip:
-  public void searchAreaCity(Connection connection, int zip){
+  public void searchAreaCity(Connection connection, int zip) throws SQLException {
 
+    ResultSet rs = null;
     String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE zip = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -1062,22 +1067,24 @@ public class HotelDatabase {
       System.out.printf("  Hotels in %d:\n", getZip());
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
     }
     catch (SQLException e) { throw e; }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 
   // Finds all hotels within a given area; used for combinations for two:
-  public void searchArea(Connection connection, String city, String state, int zip){
+  public void searchArea(Connection connection, String city, String state, int zip) throws SQLException {
 
+    ResultSet rs = null;
+    PreparedStatement pStmt = null;
     String sql1 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ?";
     String sql2 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE state = ?";
     String sql3 = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE zip = ?";
@@ -1085,7 +1092,7 @@ public class HotelDatabase {
     // City and State combination:
     if (city != null && state != null){
 
-      PreparedStatement pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql2);
+      pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql2);
       pStmt.clearParameters();
 
       setCity(city);
@@ -1097,7 +1104,7 @@ public class HotelDatabase {
     // City and ZIP combination:
     else if (city != null){
 
-      PreparedStatement pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql3);
+      pStmt = connection.prepareStatement(sql1 + " INTERSECT " + sql3);
       pStmt.clearParameters();
 
       setCity(city);
@@ -1109,7 +1116,7 @@ public class HotelDatabase {
     // State and ZIP combination:
     else {
 
-      PreparedStatement pStmt = connection.prepareStatement(sql2 + " INTERSECT " + sql3);
+      pStmt = connection.prepareStatement(sql2 + " INTERSECT " + sql3);
       pStmt.clearParameters();
 
       setState(state);
@@ -1123,10 +1130,10 @@ public class HotelDatabase {
       System.out.println("  Hotels in area:");
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
       String result;
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
 
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
@@ -1134,13 +1141,14 @@ public class HotelDatabase {
     catch (SQLException e) { throw e; }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 
   // Finds all hotels within the full address:
-  public void searchAreaFull(Connection connection, String city, String state, int zip){
+  public void searchAreaFull(Connection connection, String city, String state, int zip) throws SQLException{
 
+    ResultSet rs = null;
     String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE city = ? AND state = ? AND zip = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -1157,23 +1165,24 @@ public class HotelDatabase {
       System.out.println("  Hotels in area:");
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
     }
     catch (SQLException e) { throw e; }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 
   // Finds all the room types available at a specified hotel:
-  public void searchHotelRoomTypes(Connection connection, String hotel_name, int branch_ID){
+  public void searchHotelRoomTypes(Connection connection, String hotel_name, int branch_ID) throws SQLException {
 
-    String sql = "SELECT type, capacity FROM Hotel_Rooms WHERE hotel_name = ? AND branch_ID = ?";
+    ResultSet rs = null;
+    String sql = "SELECT type, quantity FROM Hotel_Rooms WHERE hotel_name = ? AND branch_ID = ?";
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
 
@@ -1187,16 +1196,16 @@ public class HotelDatabase {
       System.out.printf("  Room types available at %S, branch ID (%d)", getHotelName(), getBranchID());
       System.out.println("+------------------------------------------------------------------------------+");
 
-      ResultSet rs = pStmt.executeQuery();
+      rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2));
       }
     }
     catch (SQLException e) { throw e; }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 

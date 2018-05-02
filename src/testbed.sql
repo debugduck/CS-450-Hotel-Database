@@ -7,6 +7,7 @@
 INSERT INTO ADDRESS (city, state, zip) VALUES ('Long Beach', 'CA', 90802);
 INSERT INTO ADDRESS (city, state, zip) VALUES ('Portland', 'OR', 97205);
 INSERT INTO ADDRESS (city, state, zip) VALUES ('Chicago', 'IL', 60654);
+INSERT INTO ADDRESS (city, state, zip) VALUES ('San Francisco', 'CA', 94103);
 
 -- --------------------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ INSERT INTO CUSTOMER (c_ID, first_name, last_name, age, gender) VALUES (5, 'Alya
 INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Westin Hotel', 1, 'Long Beach', 'CA', 90802);
 INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Westin Hotel', 2, 'Portland', 'OR', 97205);
 INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Ritz Carlton Hotel', 1, 'Chicago', 'IL', 60654);
-INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Ritz Carlton Hotel', 2, 'Portland', 'OR', 30303);
+INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Ritz Carlton Hotel', 2, 'Portland', 'OR', 97205);
 INSERT INTO HOTEL_ADDRESS (hotel_name, branch_ID, city, state, zip) VALUES ('Four Seasons Hotel', 1, 'San Francisco', 'CA', 94103);
 
 -- --------------------------------------------------------------------------------
