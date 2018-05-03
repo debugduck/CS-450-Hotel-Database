@@ -19,7 +19,7 @@ DROP TABLE Information    CASCADE CONSTRAINTS;
 
 -- --------------------------------------------------------------------------------
 --                                    TABLES                                     --
------------------------------------------------------------------------------------   
+-----------------------------------------------------------------------------------
 
 CREATE TABLE Address(
 
@@ -89,14 +89,6 @@ CREATE TABLE Hotel_Rooms(
     quantity    INTEGER NOT NULL,
     PRIMARY KEY (hotel_name, branch_ID, type),
     FOREIGN KEY (hotel_name, branch_ID, type) REFERENCES Room (hotel_name, branch_ID, type)
-      ON DELETE CASCADE);
-
-CREATE TABLE Reserved(
-
-    c_ID     INTEGER,
-    res_num  INTEGER,
-    PRIMARY KEY (c_ID, res_num),
-    FOREIGN KEY (c_ID, res_num) REFERENCES Reservation (c_ID, res_num)
       ON DELETE CASCADE);
 
 CREATE TABLE Booking(
