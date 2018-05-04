@@ -3,6 +3,7 @@
 // JDBC Libraries:
 import java.sql.*;
 import oracle.jdbc.driver.*;    // JDBC Driver
+import org.omg.PortableInterceptor.LOCATION_FORWARD;
 
 // JDK Libraries
 import java.text.DateFormat;
@@ -119,8 +120,8 @@ public class HotelDatabase {
   private int  res_num;
   private int  party_size;
   private int  cost;
-  private Date check_in;
-  private Date check_out;
+  private LocalDate check_in;
+  private LocalDate check_out;
 
   // DB Columns:
   private final ArrayList<String> HOTEL;
@@ -165,16 +166,18 @@ public class HotelDatabase {
     Scanner scan = new Scanner(System.in);
 
     // Get the connection:
-    hotelDB.username = "anowilat";
-    hotelDB.password = "doopee";
+    hotelDB.username = "";
+    hotelDB.password = "";
     Connection connection = hotelDB.getConnection(hotelDB.username, hotelDB.password);
     try {
         // Populate DateList and assign generic values to price:
         //hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
         //hotelDB.searchArea(connection, "Long Beach", "CA", 94103);
-        hotelDB.showTable(connection);
+        //hotelDB.showTable(connection);
         //hotelDB.createRoom(connection, scan);
         //hotelDB.searchCustomerReservations(connection, 2);
+        //hotelDB.searchHotelReservations(connection, , int branchID, LocalDate checkIn, LocalDate checkOut)
+        hotelDB.searchAvailabilityType(connection, "Westin Hotel", 1, "Presidential Suite", LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-01"));
 
     } catch (SQLException e) {
         e.printStackTrace();
@@ -873,7 +876,7 @@ public class HotelDatabase {
   }
 
   // Finds all available reservation(s) for a hotel given its name and branch ID with a date filter:
-  public void searchHotelReservations(Connection connection, String hotel_name, int branchID, java.sql.Date checkIn, java.sql.Date checkOut) throws SQLException {
+  public void searchHotelReservations(Connection connection, String hotel_name, int branchID, LocalDate checkIn, LocalDate checkOut) throws SQLException {
 
     ResultSet rs = null;
     String sql = "SELECT c_id, res_num, check_in, check_out FROM Booking WHERE hotel_name = ? AND branch_ID = ? AND check_in >= to_date(?, 'YYYY-MM-DD') AND check_out <= to_date(?, 'YYYY-MM-DD')";
@@ -886,20 +889,20 @@ public class HotelDatabase {
     pStmt.setInt(2, getBranchID());
 
     if (checkIn == null && checkOut == null){
-      pStmt.setDate(3, java.sql.Date.valueOf("2000-01-01"));
-      pStmt.setDate(4, java.sql.Date.valueOf("3000-01-01"));
+      pStmt.setString(3, LocalDate.parse("2000-01-01").toString());
+      pStmt.setString(4, LocalDate.parse("3000-01-01").toString());
     }
     else if (checkIn == null){
-      pStmt.setDate(3, checkIn);
-      pStmt.setDate(4, java.sql.Date.valueOf("3000-01-01"));
+      pStmt.setString(3, checkIn.toString());
+      pStmt.setString(4, LocalDate.parse("3000-01-01").toString());
     }
     else if (checkOut == null){
-      pStmt.setDate(3, java.sql.Date.valueOf("2000-01-01"));
-      pStmt.setDate(4, checkOut);
+      pStmt.setString(3, LocalDate.parse("2000-01-01").toString());
+      pStmt.setString(4, checkOut.toString());
     }
     else {
-      pStmt.setDate(3, checkIn);
-      pStmt.setDate(4, checkOut);
+      pStmt.setString(3, checkIn.toString());
+      pStmt.setString(4, checkOut.toString());
     }
 
     try {
@@ -922,7 +925,7 @@ public class HotelDatabase {
   }
 
   // Finds all availabilities and pricelistings for a particular type of room at a specified hotel within a date range:
-  public void searchAvailabilityType(Connection connection, String hotel_name, int branchID, String type, java.sql.Date from, java.sql.Date to) throws SQLException {
+  public void searchAvailabilityType(Connection connection, String hotel_name, int branchID, String type, LocalDate from, LocalDate to) throws SQLException {
 
     ResultSet rs = null;
     String sql = "SELECT num_avail, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type = ? AND date_from >= to_date(?, 'YYYY-MM-DD') AND date_to <= to_date(?, 'YYYY-MM-DD')";
@@ -936,8 +939,9 @@ public class HotelDatabase {
     pStmt.setInt(2, getBranchID());
     setType(type);
     pStmt.setString(3, getType());
-    pStmt.setDate(4, from);
-    pStmt.setDate(5, to);
+    pStmt.setString(4, from.toString());
+    pStmt.setString(5, to.toString());
+    System.out.println(pStmt.toString());
 
     try {
 
@@ -989,7 +993,7 @@ public class HotelDatabase {
     catch (SQLException e) { throw e; }
     finally {
       pStmt.close();
-      rs.close();
+      if(rs != null) { rs.close(); }
     }
   }
 
@@ -1425,19 +1429,19 @@ public class HotelDatabase {
     this.cost = cost;
   }
 
-  public Date getCheckIn(){
+  public LocalDate getCheckIn(){
     return this.check_in;
   }
 
-  public void setCheckIn(Date check_in){
+  public void setCheckIn(LocalDate check_in){
     this.check_in = check_in;
   }
 
-  public Date getCheckOut(){
+  public LocalDate getCheckOut(){
     return this.check_out;
   }
 
-  public void setCheckOut(Date check_out){
+  public void setCheckOut(LocalDate check_out){
     this.check_out = check_out;
   }
 
