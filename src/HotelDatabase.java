@@ -843,6 +843,48 @@ public class HotelDatabase {
     finally { pStmt.close(); }
   }
 
+  public void createReservation(Connection connection) throws SQLException {
+
+  }
+
+  // Creates a list of entries for dates from a start and end date:
+  public void createDateList(Connection connection) throws SQLException {
+
+    Scanner scan = new Scanner(System.in);
+
+    DatabaseMetaData dmd = connection.getMetaData();
+    ResultSet rs = dmd.getTables(null, null, "DATELIST", null);
+
+    if (rs != null) {
+
+      System.out.print("Please provide a start date: ");
+      LocalDate start = LocalDate.parse(scan.nextLine());
+
+      System.out.print("Please provide an end date: ");
+      LocalDate end = LocalDate.parse(scan.nextLine());
+
+      while (!start.isAfter(end)){
+
+        String sql = "INSERT INTO DateList VALUES (to_date(?, 'YYYY-MM-DD'), to_date(?, 'YYYY-MM-DD'))";
+        PreparedStatement pStmt = connection.prepareStatement(sql);
+        pStmt.clearParameters();
+
+        pStmt.setString(1, start);
+        pStmt.setString(2, end);
+
+        try { pStmt.executeUpdate(); }
+        catch (SQLException e) { throw e; }
+        finally {
+          pStmt.close();
+          rs.close();
+        }
+      }
+    }
+    else {
+      System.out.println("ERROR: Error loading CUSTOMER Table.");
+    }
+  }
+
   // Finds the available reservation(s) for a customer given their CID:
   public void searchCustomerReservations(Connection connection, int CID) throws SQLException {
 
@@ -1052,7 +1094,7 @@ public class HotelDatabase {
   }
 
   // Finds all hotels within a given zip:
-  public void searchAreaCity(Connection connection, int zip) throws SQLException {
+  public void searchAreaZIP(Connection connection, int zip) throws SQLException {
 
     ResultSet rs = null;
     String sql = "SELECT hotel_name, branch_id FROM Hotel_Address WHERE zip = ?";
@@ -1206,6 +1248,42 @@ public class HotelDatabase {
     finally {
       pStmt.close();
       if(rs != null) { rs.close(); }
+    }
+  }
+
+  // General search for customers to make reservations:
+  public void generalSearch(Connection connection, LocalDate check_in, LocalDate check_out, int party_size, String city) throws SQLException {
+
+    String sql = "SELECT I.hotel_name, I.branch_ID, I.type, I.price FROM INFORMATION I, ROOM R, HOTEL_ADDRESS HA WHERE R.capacity >= ? AND HA.city = ? AND I.date_from >= to_date(?, 'YYYY-MM-DD') AND I.date_from <= to_date(?,'YYYY-MM-DD') GROUP BY I.date_from, I.date_to HAVING I.num_avail > 0";
+    PreparedStatement pStmt = connection.prepareStatement(sql);
+    pStmt.clearParameters();
+
+    setPartySize(party_size);
+    pStmt.setInt(1, getPartySize());
+    setCity(city);
+    pStmt.setString(2, getCity());
+    pStmt.setString(3, check_in.toString());
+    pStmt.setString(4, check_out.toString());
+
+    ResultSet rs = null;
+
+    try {
+
+      System.out.printf("  Hotels available: ");
+      System.out.println("+------------------------------------------------------------------------------+");
+
+      rs = pStmt.executeQuery();
+
+      while (rs.nextLine()) {
+        System.out.println(rs.getString(1) + " " + rs.getInt(2) + " " + rs.getString(3) + " " + rs.getInt(4));
+      }
+    }
+    catch (SQLException e) { e.printStackTrace(); }
+    finally {
+      pStmt.close();
+      if (rs != null){
+        rs.close();
+      }
     }
   }
 
