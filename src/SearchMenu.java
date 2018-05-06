@@ -15,15 +15,14 @@ public class SearchMenu extends JPanel implements ActionListener {
 
     JButton CResButton;
     JButton HResButton;
-    JButton typeButton;
+    JButton generalButton;
     JButton availButton;
     JButton cityButton;
     JButton stateButton;
     JButton zipButton;
     JButton CResSubmit;
-    JButton hotelSubmit;
+    JButton generalSubmit;
     JButton reservationSubmit;
-    JButton hotelAddressSubmit;
 
     // Create Customer
     JTextField cIDField;
@@ -103,10 +102,10 @@ public class SearchMenu extends JPanel implements ActionListener {
         HResButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
         HResButton.setActionCommand("HRES");
 
-        typeButton = new JButton("Search Type Availability");
-        typeButton.setVerticalTextPosition(AbstractButton.CENTER);
-        typeButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        typeButton.setActionCommand("TYPE");
+        generalButton = new JButton("Search General Availability");
+        generalButton.setVerticalTextPosition(AbstractButton.CENTER);
+        generalButton.setHorizontalTextPosition(AbstractButton.LEADING);
+        generalButton.setActionCommand("GENERAL");
 
         availButton = new JButton("Search All Availability");
         availButton.setVerticalTextPosition(AbstractButton.CENTER);
@@ -131,7 +130,7 @@ public class SearchMenu extends JPanel implements ActionListener {
 
         CResButton.addActionListener(this);
         HResButton.addActionListener(this);
-        typeButton.addActionListener(this);
+        generalButton.addActionListener(this);
         availButton.addActionListener(this);
         cityButton.addActionListener(this);
         stateButton.addActionListener(this);
@@ -140,7 +139,7 @@ public class SearchMenu extends JPanel implements ActionListener {
         //Add Components to this container, using the default FlowLayout.
         add(CResButton);
         add(HResButton);
-        add(typeButton);
+        add(generalButton);
         add(availButton);
         add(cityButton);
         add(stateButton);
@@ -165,128 +164,60 @@ public class SearchMenu extends JPanel implements ActionListener {
         //Lay out everything.
         JPanel textPane = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-        CResSubmit = new JButton("Submit Changes");
+        CResSubmit = new JButton("Search");
         CResSubmit.setActionCommand("CRESSUBMIT");
         CResSubmit.addActionListener(this);
 
-        textPane.add(CResSubmit);
         textPane.add(cIDLabel);
         textPane.add(cIDField);
+        textPane.add(CResSubmit);
 
         add(textPane);
         frame.revalidate();
         frame.repaint();
     }
 
-    public void addHotelFields() {
-        hotelNameField = new JTextField(20);
-        branchIDField = new JTextField(20);
-        phoneField = new JTextField(20);
-
-        hotelNameField.setActionCommand("SUBMITHOTEL");
-        branchIDField.setActionCommand("SUBMITHOTEL");
-        phoneField.setActionCommand("SUBMITHOTEL");
-
-        hotelNameField.addActionListener(this);
-        branchIDField.addActionListener(this);
-        phoneField.addActionListener(this);
-
-        hotelNameLabel = new JLabel("Enter Hotel Name:");
-        hotelNameLabel.setLabelFor(hotelNameField);
-        branchIDLabel = new JLabel("Enter Branch ID:");
-        branchIDLabel.setLabelFor(branchIDField);
-        phoneLabel = new JLabel("Enter Phone Number:");
-        phoneLabel.setLabelFor(phoneField);
-
-        //Lay out everything.
-        JPanel textPane = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-
-        hotelSubmit = new JButton("Submit Changes");
-        hotelSubmit.setActionCommand("SUBMITHOTEL");
-        hotelSubmit.addActionListener(this);
-
-        textPane.add(hotelSubmit);
-        textPane.add(hotelNameLabel);
-        textPane.add(hotelNameField);
-        textPane.add(branchIDLabel);
-        textPane.add(branchIDField);
-        textPane.add(phoneLabel);
-        textPane.add(phoneField);
-
-        add(textPane);
-        frame.revalidate();
-        frame.repaint();
-    }
-
-    public void addRoomFields() {
-        typeField = new JTextField(20);
-        capacityField = new JTextField(20);
-        quantityField = new JTextField(20);
-
-        typeField.setActionCommand("SUBMITROOM");
-        capacityField.setActionCommand("SUBMITROOM");
-        quantityField.setActionCommand("SUBMITROOM");
-
-        typeField.addActionListener(this);
-        capacityField.addActionListener(this);
-        quantityField.addActionListener(this);
-
-        typeLabel = new JLabel("Enter Room Type:");
-        typeLabel.setLabelFor(typeField);
-        capacityLabel = new JLabel("Enter Room Capacity:");
-        capacityLabel.setLabelFor(capacityField);
-        quantityLabel = new JLabel("Enter Room Quantity:");
-        quantityLabel.setLabelFor(quantityField);
-
-        //Lay out everything.
-        JPanel textPane = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-
-        textPane.add(typeLabel);
-        textPane.add(typeField);
-        textPane.add(capacityLabel);
-        textPane.add(capacityField);
-        textPane.add(quantityLabel);
-        textPane.add(quantityField);
-
-        add(textPane);
-        frame.revalidate();
-        frame.repaint();
-    }
-
-    public void addAddressFields() {
+    public void addGeneralSearchFields() {
         cityField = new JTextField(20);
-        stateField = new JTextField(20);
-        zipField = new JTextField(20);
+        partySizeField = new JTextField(20);
+        checkInField = new JTextField(20);
+        checkOutField = new JTextField(20);
 
-        cityField.setActionCommand("SUBMITADDRESS");
-        stateField.setActionCommand("SUBMITADDRESS");
-        zipField.setActionCommand("SUBMITADDRESS");
+        cityField.setActionCommand("GENERALSUBMIT");
+        partySizeField.setActionCommand("GENERALSUBMIT");
+        checkInField.setActionCommand("GENERALSUBMIT");
+        checkOutField.setActionCommand("GENERALSUBMIT");
 
         cityField.addActionListener(this);
-        stateField.addActionListener(this);
-        zipField.addActionListener(this);
+        partySizeField.addActionListener(this);
+        checkInField.addActionListener(this);
+        checkOutField.addActionListener(this);
 
         cityLabel = new JLabel("Enter City:");
         cityLabel.setLabelFor(cityField);
-        stateLabel = new JLabel("Enter State:");
-        stateLabel.setLabelFor(stateField);
-        zipLabel = new JLabel("Enter Zipcode:");
-        zipLabel.setLabelFor(zipField);
+        partySizeLabel = new JLabel("Enter Party Size:");
+        partySizeLabel.setLabelFor(partySizeField);
+        checkInLabel = new JLabel("Enter Check In Date:");
+        checkInLabel.setLabelFor(checkInField);
+        checkOutLabel = new JLabel("Enter Check Out Date:");
+        checkOutLabel.setLabelFor(checkOutField);
 
         //Lay out everything.
         JPanel textPane = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-        hotelAddressSubmit = new JButton("Search");
-        hotelAddressSubmit.setActionCommand("SUBMITADDRESS");
-        hotelAddressSubmit.addActionListener(this);
+        generalSubmit = new JButton("Search");
+        generalSubmit.setActionCommand("GENERALSUBMIT");
+        generalSubmit.addActionListener(this);
 
-        textPane.add(hotelAddressSubmit);
         textPane.add(cityLabel);
         textPane.add(cityField);
-        textPane.add(stateLabel);
-        textPane.add(stateField);
-        textPane.add(zipLabel);
-        textPane.add(zipField);
+        textPane.add(partySizeLabel);
+        textPane.add(partySizeField);
+        textPane.add(checkInLabel);
+        textPane.add(checkInField);
+        textPane.add(checkOutLabel);
+        textPane.add(checkOutField);
+        textPane.add(generalSubmit);
 
         add(textPane);
         frame.revalidate();
@@ -294,7 +225,6 @@ public class SearchMenu extends JPanel implements ActionListener {
     }
 
     public void resetFields() {
-        if(stateButton != null) { stateButton.setVisible(false); }
         if(cIDLabel !=  null) { cIDLabel.setVisible(false); }
         if(cIDField != null) { cIDField.setVisible(false); }
         if(firstNameLabel != null) { firstNameLabel.setVisible(false); }
@@ -305,7 +235,7 @@ public class SearchMenu extends JPanel implements ActionListener {
         if(ageField != null) { ageField.setVisible(false); }
         if(genderLabel != null) { genderLabel.setVisible(false); }
         if(genderField != null) { genderField.setVisible(false); }
-        if(hotelSubmit != null) { hotelSubmit.setVisible(false); }
+        if(generalSubmit != null) { generalSubmit.setVisible(false); }
         if(hotelNameLabel != null) { hotelNameLabel.setVisible(false); }
         if(hotelNameField != null) { hotelNameField.setVisible(false); }
         if(branchIDLabel != null) { branchIDLabel.setVisible(false); }
@@ -318,6 +248,25 @@ public class SearchMenu extends JPanel implements ActionListener {
         if(capacityField != null) { capacityField.setVisible(false); }
         if(quantityLabel != null) { quantityLabel.setVisible(false); }
         if(quantityField != null) { quantityField.setVisible(false); }
+        if(checkInField != null) { checkInField.setVisible(false); }
+        if(checkInLabel != null) { checkInLabel.setVisible(false); }
+        if(checkOutLabel != null) { checkOutLabel.setVisible(false); }
+        if(checkOutField != null) { checkOutField.setVisible(false); }
+        if(costLabel != null) { costLabel.setVisible(false); }
+        if(costField != null) { costField.setVisible(false); }
+        if(reservationSubmit != null) { reservationSubmit.setVisible(false); }
+        if(resNumField != null) { resNumField.setVisible(false); }
+        if(resNumLabel != null) { resNumLabel.setVisible(false); }
+        if(partySizeField != null) { partySizeField.setVisible(false); }
+        if(partySizeLabel != null) { partySizeLabel.setVisible(false); }
+        if(cityField != null) { cityField.setVisible(false); }
+        if(cityLabel != null) { cityLabel.setVisible(false); }
+        if(stateField != null) { stateField.setVisible(false); }
+        if(stateLabel != null) { stateLabel.setVisible(false); }
+        if(zipField != null) { zipField.setVisible(false); }
+        if(zipLabel != null) { zipLabel.setVisible(false); }
+        if(CResSubmit != null) { CResSubmit.setVisible(false); }
+        if(queryResult != null) { queryResult.setText(""); }
 
     }
 
@@ -413,28 +362,23 @@ public class SearchMenu extends JPanel implements ActionListener {
             frame.revalidate();
             frame.repaint();
         }
-        if ("HOTEL".equals(e.getActionCommand())) {
+        if ("GENERAL".equals(e.getActionCommand())) {
             resetFields();
-            addHotelFields();
-
-        } else if("ROOM".equals(e.getActionCommand())) {
-            resetFields();
-            addRoomFields();
+            addGeneralSearchFields();
 
         } else if("CRES".equals(e.getActionCommand())) {
             resetFields();
             addCustomerFields();
 
-        } else if("RESERVATION".equals(e.getActionCommand())) {
-            //addReservationFields();
-
-        } else if("ADDRESSES".equals(e.getActionCommand())) {
-            resetFields();
-            addAddressFields();
-
         } else if("CRESSUBMIT".equals(e.getActionCommand())) {
             try {
                 searchCustomerReservations(connection);
+            } catch(SQLException s) {
+                s.printStackTrace();
+            }
+        } else if("GENERALSUBMIT".equals(e.getActionCommand())) {
+            try {
+                generalSearch(connection);
             } catch(SQLException s) {
                 s.printStackTrace();
             }

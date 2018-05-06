@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e5b0d1d-71ac-4422-be53-b8f1706d444a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AddMenu.java" afterPath="$PROJECT_DIR$/src/AddMenu.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SearchMenu.java" afterPath="$PROJECT_DIR$/src/SearchMenu.java" />
     </list>
     <ignored path="HotelDatabase.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,7 +42,7 @@
         <entry file="file://$PROJECT_DIR$/src/testbed.sql">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="58" column="52" selection-start-line="58" selection-start-column="52" selection-end-line="58" selection-end-column="52" />
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -97,18 +98,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AddMenu.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AddMenu.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="752" column="66" selection-start-line="752" selection-start-column="66" selection-end-line="752" selection-end-column="66" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="UpdateMenu.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/UpdateMenu.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -136,8 +125,20 @@
       <file leaf-file-name="SearchMenu.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/SearchMenu.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="11.421405">
-              <caret line="381" column="31" selection-start-line="381" selection-start-column="31" selection-end-line="381" selection-end-column="31" />
+            <state vertical-scroll-proportion="5.1923075">
+              <caret line="335" column="36" selection-start-line="335" selection-start-column="36" selection-end-line="335" selection-end-column="36" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AddMenu.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AddMenu.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="465" column="60" selection-start-line="465" selection-start-column="60" selection-end-line="465" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -176,9 +177,9 @@
         <option value="$PROJECT_DIR$/src/UpdateMenu.java" />
         <option value="$PROJECT_DIR$/src/DeleteMenu.java" />
         <option value="$PROJECT_DIR$/src/ViewMenu.java" />
-        <option value="$PROJECT_DIR$/src/SearchMenu.java" />
         <option value="$PROJECT_DIR$/src/HotelDatabase.java" />
         <option value="$PROJECT_DIR$/src/AddMenu.java" />
+        <option value="$PROJECT_DIR$/src/SearchMenu.java" />
       </list>
     </option>
   </component>
@@ -606,7 +607,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1605" height="1047" extended-state="0" />
+    <frame x="-7" y="0" width="1605" height="1047" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -715,18 +716,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ViewMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="190" column="72" selection-start-line="190" selection-start-column="72" selection-end-line="190" selection-end-column="72" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4174#4175#0" expanded="true" />
-            <element signature="e#4218#4219#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/MainMenu.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -735,17 +724,6 @@
             <element signature="imports" expanded="true" />
             <element signature="e#3289#3290#0" expanded="true" />
             <element signature="e#3333#3334#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/HotelDatabase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="202" column="114" selection-start-line="202" selection-start-column="114" selection-end-line="202" selection-end-column="114" />
-          <folding>
-            <element signature="e#0#53076#0" expanded="true" />
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -768,24 +746,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DeleteMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="350" column="72" selection-start-line="350" selection-start-column="72" selection-end-line="350" selection-end-column="72" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/testbed.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="58" column="52" selection-start-line="58" selection-start-column="52" selection-end-line="58" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/SignIn.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -796,10 +756,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/DeleteMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="350" column="72" selection-start-line="350" selection-start-column="72" selection-end-line="350" selection-end-column="72" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HotelDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="202" column="114" selection-start-line="202" selection-start-column="114" selection-end-line="202" selection-end-column="114" />
+          <folding>
+            <element signature="e#0#53076#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/testbed.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ViewMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="190" column="72" selection-start-line="190" selection-start-column="72" selection-end-line="190" selection-end-column="72" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4218#4219#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AddMenu.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="752" column="66" selection-start-line="752" selection-start-column="66" selection-end-line="752" selection-end-column="66" />
+          <caret line="465" column="60" selection-start-line="465" selection-start-column="60" selection-end-line="465" selection-end-column="60" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -808,8 +809,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SearchMenu.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="11.421405">
-          <caret line="381" column="31" selection-start-line="381" selection-start-column="31" selection-end-line="381" selection-end-column="31" />
+        <state vertical-scroll-proportion="5.1923075">
+          <caret line="335" column="36" selection-start-line="335" selection-start-column="36" selection-end-line="335" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
