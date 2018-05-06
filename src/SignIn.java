@@ -81,8 +81,10 @@ public class SignIn extends JPanel implements ActionListener {
             String password = passwordField.getText();
             connection = db.getConnection(username, password);
             if (connection != null) {
-                MainMenu mm = new MainMenu(controllingFrame);
+                controllingFrame.dispose();
+                MainMenu mm = new MainMenu();
                 mm.setConnection(connection);
+                mm.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(controllingFrame,
                         "Invalid password. Try again.",
@@ -99,50 +101,6 @@ public class SignIn extends JPanel implements ActionListener {
                             + "Or look at the section How to Use Password Fields in\n"
                             + "the components section of The Java Tutorial.");
         }
-    }
-
-    protected void showMenu(Connection connection) {
-        //Create everything.
-        //usernameField.setActionCommand(SUBMIT);
-        //controllingFrame = new JFrame();
-        //JLabel passwordLabel = new JLabel("Enter the password: ");
-        //passwordLabel.setLabelFor(passwordField);
-
-        //JLabel usernameLabel = new JLabel("Enter the username: ");
-        //usernameLabel.setLabelFor(usernameField);
-
-        JComponent buttonPane = createMainMenuButtons();
-
-        add(buttonPane);
-
-    }
-
-    protected JComponent createMainMenuButtons() {
-        JPanel p = new JPanel(new GridLayout(0,1));
-        JButton viewTablesButton = new JButton("View Tables");
-        JButton addRecordsButton = new JButton("Add Records");
-        JButton updateRecordsButton = new JButton("Update Records");
-        JButton deleteRecordsButton = new JButton("Delete Records");
-        JButton searchRecordsButton = new JButton("Search Records");
-
-        viewTablesButton.setActionCommand(VIEW);
-        addRecordsButton.setActionCommand(ADD);
-        updateRecordsButton.setActionCommand(UPDATE);
-        deleteRecordsButton.setActionCommand(DELETE);
-        searchRecordsButton.setActionCommand(SEARCH);
-        viewTablesButton.addActionListener(this);
-        addRecordsButton.addActionListener(this);
-        updateRecordsButton.addActionListener(this);
-        deleteRecordsButton.addActionListener(this);
-        searchRecordsButton.addActionListener(this);
-
-        p.add(viewTablesButton);
-        p.add(addRecordsButton);
-        p.add(updateRecordsButton);
-        p.add(deleteRecordsButton);
-        p.add(searchRecordsButton);
-
-        return p;
     }
 
     //Must be called from the event dispatch thread.

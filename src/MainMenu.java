@@ -1,139 +1,113 @@
-import sun.applet.Main;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
 
-/* PasswordDemo.java requires no other files. */
-
+/*
+ * ButtonDemo.java requires the following files:
+ *   images/right.gif
+ *   images/middle.gif
+ *   images/left.gif
+ */
 public class MainMenu extends JPanel implements ActionListener {
-    private static String ADD = "add";
-    private static String VIEW = "view";
-    private static String SEARCH = "search";
-    private static String DELETE = "delete";
-    private static String UPDATE = "update";
 
-    private JFrame controllingFrame; //needed for dialogs
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private HotelDatabase db;
-    private Connection connection;
+    JButton viewTablesButton;
+    JButton addRecordsButton;
+    JButton updateRecordsButton;
+    JButton deleteRecordsButton;
+    JButton searchRecordsButton;
+    Connection connection;
+    HotelDatabase db;
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
+    public MainMenu() {
 
-
-    public MainMenu(JFrame f) {
-        //Use the default FlowLayout.
-        controllingFrame = f;
         db = new HotelDatabase();
+        //Create and set up the window.
+        JFrame frame = new JFrame("SimpleTravel - Main Menu");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JComponent buttonPane = createMainMenuButtons();
-        add(buttonPane);
-    }
+        //Display the window.
+        frame.setPreferredSize(new Dimension(800, 500));
 
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
 
-    public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
+        viewTablesButton = new JButton("View Table");
+        viewTablesButton.setVerticalTextPosition(AbstractButton.CENTER);
+        viewTablesButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        //b1.setMnemonic(KeyEvent.VK_D);
+        viewTablesButton.setActionCommand("VIEW");
 
-        if (VIEW.equals(cmd)) { //Process the password.
+        addRecordsButton = new JButton("Add Records");
+        addRecordsButton.setVerticalTextPosition(AbstractButton.CENTER);
+        addRecordsButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        //b1.setMnemonic(KeyEvent.VK_D);
+        addRecordsButton.setActionCommand("ADD");
 
-        } else { //The user has asked for help.
+        updateRecordsButton = new JButton("Update Records");
+        updateRecordsButton.setVerticalTextPosition(AbstractButton.CENTER);
+        updateRecordsButton.setHorizontalTextPosition(AbstractButton.LEADING);
+        updateRecordsButton.setActionCommand("UPDATE");
 
-        }
-    }
+        deleteRecordsButton = new JButton("Delete Records");
+        deleteRecordsButton.setVerticalTextPosition(AbstractButton.CENTER);
+        deleteRecordsButton.setHorizontalTextPosition(AbstractButton.LEADING);
+        deleteRecordsButton.setActionCommand("DELETE");
 
-    protected void showMenu(Connection connection) {
-        //Create everything.
-        //usernameField.setActionCommand(SUBMIT);
-        //controllingFrame = new JFrame();
-        //JLabel passwordLabel = new JLabel("Enter the password: ");
-        //passwordLabel.setLabelFor(passwordField);
+        searchRecordsButton = new JButton("Search Records");
+        searchRecordsButton.setVerticalTextPosition(AbstractButton.CENTER);
+        searchRecordsButton.setHorizontalTextPosition(AbstractButton.LEADING);
+        searchRecordsButton.setActionCommand("SEARCH");
 
-        //JLabel usernameLabel = new JLabel("Enter the username: ");
-        //usernameLabel.setLabelFor(usernameField);
-
-        JComponent buttonPane = createMainMenuButtons();
-
-        add(buttonPane);
-
-    }
-
-    protected JComponent createMainMenuButtons() {
-        JPanel p = new JPanel(new GridLayout(0,1));
-        JButton viewTablesButton = new JButton("View Tables");
-        JButton addRecordsButton = new JButton("Add Records");
-        JButton updateRecordsButton = new JButton("Update Records");
-        JButton deleteRecordsButton = new JButton("Delete Records");
-        JButton searchRecordsButton = new JButton("Search Records");
-
-        viewTablesButton.setActionCommand(VIEW);
-        addRecordsButton.setActionCommand(ADD);
-        updateRecordsButton.setActionCommand(UPDATE);
-        deleteRecordsButton.setActionCommand(DELETE);
-        searchRecordsButton.setActionCommand(SEARCH);
+        //Listen for actions on buttons 1 and 3.
         viewTablesButton.addActionListener(this);
         addRecordsButton.addActionListener(this);
         updateRecordsButton.addActionListener(this);
         deleteRecordsButton.addActionListener(this);
         searchRecordsButton.addActionListener(this);
 
-        p.add(viewTablesButton);
-        p.add(addRecordsButton);
-        p.add(updateRecordsButton);
-        p.add(deleteRecordsButton);
-        p.add(searchRecordsButton);
 
-        return p;
+        //Add Components to this container, using the default FlowLayout.
+        add(viewTablesButton);
+        add(addRecordsButton);
+        add(updateRecordsButton);
+        add(deleteRecordsButton);
+        add(searchRecordsButton);
+
+        this.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(this);
     }
 
-    //Must be called from the event dispatch thread.
-    protected void resetFocus() {
-        passwordField.requestFocusInWindow();
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event dispatch thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("SimpleTravel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        final MainMenu newContentPane = new MainMenu(frame);
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Make sure the focus goes to the right component
-        //whenever the frame is initially given the focus.
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowActivated(WindowEvent e) {
-                newContentPane.resetFocus();
-            }
-        });
-
-        //Display the window.
-        frame.setPreferredSize(new Dimension(800, 500));
-        frame.pack();
-        frame.setVisible(true);
+    public void actionPerformed(ActionEvent e) {
+        if ("VIEW".equals(e.getActionCommand())) {
+            ViewMenu vm = new ViewMenu();
+            vm.setConnection(connection);
+        } else if("ADD".equals(e.getActionCommand())){
+            AddMenu am = new AddMenu();
+            am.setConnection(connection);
+        } else if("UPDATE".equals(e.getActionCommand())) {
+            UpdateMenu um = new UpdateMenu();
+            um.setConnection(connection);
+        } else if("DELETE".equals(e.getActionCommand())) {
+            DeleteMenu dm = new DeleteMenu();
+            dm.setConnection(connection);
+        } else if("SEARCH".equals(e.getActionCommand())) {
+            SearchMenu sm = new SearchMenu();
+            sm.setConnection(connection);
+        }
     }
 
-    public static void main(String[] args) {
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-                UIManager.put("swing.boldMetal", Boolean.FALSE);
-                createAndShowGUI();
-            }
-        });
-    }
+
 }

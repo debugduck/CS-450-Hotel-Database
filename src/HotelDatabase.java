@@ -4,6 +4,7 @@
 import java.sql.*;
 import oracle.jdbc.driver.*;    // JDBC Driver
 import org.omg.PortableInterceptor.LOCATION_FORWARD;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // JDK Libraries
 import java.text.DateFormat;
@@ -124,17 +125,17 @@ public class HotelDatabase {
   private LocalDate check_out;
 
   // DB Columns:
-  private final ArrayList<String> HOTEL;
-  private final ArrayList<String> ROOM;
-  private final ArrayList<String> CUSTOMER;
-  private final ArrayList<String> RESERVATION;
-  private final ArrayList<String> HOTEL_ADDRESS;
-  private final ArrayList<String> HOTEL_ROOM;
-  private final ArrayList<String> BOOKING;
-  private final ArrayList<String> INFORMATION;
-  private final ArrayList<String> NUMBERS;
-  private final ArrayList<String> DATES;
-  private final ArrayList<ArrayList<String>> ALL;
+  protected final ArrayList<String> HOTEL;
+  protected final ArrayList<String> ROOM;
+  protected final ArrayList<String> CUSTOMER;
+  protected final ArrayList<String> RESERVATION;
+  protected final ArrayList<String> HOTEL_ADDRESS;
+  protected final ArrayList<String> HOTEL_ROOMS;
+  protected final ArrayList<String> BOOKING;
+  protected final ArrayList<String> INFORMATION;
+  protected final ArrayList<String> NUMBERS;
+  protected final ArrayList<String> DATES;
+  protected final ArrayList<ArrayList<String>> ALL;
 
   ///////////////////////////////////////////////////////////////////////////////
   //                                  Methods                                  //
@@ -148,14 +149,14 @@ public class HotelDatabase {
     this.CUSTOMER = new ArrayList<String>(Arrays.asList("CUSTOMER", "C_ID", "FIRST_NAME", "LAST_NAME", "AGE", "GENDER"));
     this.RESERVATION = new ArrayList<String>(Arrays.asList("RESERVATION", "C_ID", "RES_NUM", "PARTY_SIZE", "COST"));
     this.HOTEL_ADDRESS = new ArrayList<String>(Arrays.asList("HOTEL_ADDRESS", "HOTEL_NAME", "BRANCH_ID", "CITY", "STATE", "ZIP"));
-    this.HOTEL_ROOM = new ArrayList<String>(Arrays.asList("HOTEL_ROOM", "HOTEL_NAME", "BRANCH_ID", "TYPE", "QUANTITY"));
+    this.HOTEL_ROOMS = new ArrayList<String>(Arrays.asList("HOTEL_ROOMS", "HOTEL_NAME", "BRANCH_ID", "TYPE", "QUANTITY"));
     this.BOOKING = new ArrayList<String>(Arrays.asList("BOOKING", "C_ID", "RES_NUM", "CHECK_IN", "CHECK_OUT", "HOTEL_NAME", "BRANCH_ID", "TYPE"));
-    this.INFORMATION = new ArrayList<String>(Arrays.asList("INFORMATION", "HOTEL_NAME", "BRANCH_ID", "TYPE", "DATE_FROM", "DATE_TO", "NUM_AVAILABLE", "PRICE"));
+    this.INFORMATION = new ArrayList<String>(Arrays.asList("INFORMATION", "HOTEL_NAME", "BRANCH_ID", "TYPE", "DATE_FROM", "DATE_TO", "NUM_AVAIL", "PRICE"));
     this.NUMBERS = new ArrayList<String>(Arrays.asList("BRANCH_ID", "CAPACITY", "C_ID", "AGE", "RES_NUM", "PARTY_SIZE", "COST", "ZIP", "QUANTITY", "NUM_AVAILABLE", "PRICE"));
     this.DATES = new ArrayList<String>(Arrays.asList("CHECK_IN", "CHECK_OUT", "DATE_FROM", "DATE_TO"));
 
     // INDEXING:                                                0     1       2           3             4             5         6           7
-    this.ALL = new ArrayList<ArrayList<String>>(Arrays.asList(HOTEL, ROOM, CUSTOMER, RESERVATION, HOTEL_ADDRESS, HOTEL_ROOM, BOOKING, INFORMATION));
+    this.ALL = new ArrayList<ArrayList<String>>(Arrays.asList(HOTEL, ROOM, CUSTOMER, RESERVATION, HOTEL_ADDRESS, HOTEL_ROOMS, BOOKING, INFORMATION));
   }
 
   // Runs the program from the command line:
@@ -166,18 +167,18 @@ public class HotelDatabase {
     Scanner scan = new Scanner(System.in);
 
     // Get the connection:
-    hotelDB.username = "";
-    hotelDB.password = "";
+    hotelDB.username = "anowilat";
+    hotelDB.password = "doopee";
     Connection connection = hotelDB.getConnection(hotelDB.username, hotelDB.password);
     try {
         // Populate DateList and assign generic values to price:
-        //hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
+        hotelDB.populateDemo(connection, LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-31"));
         //hotelDB.searchArea(connection, "Long Beach", "CA", 94103);
+        //hotelDB.createHotel(connection);
         //hotelDB.showTable(connection);
-        //hotelDB.createRoom(connection, scan);
         //hotelDB.searchCustomerReservations(connection, 2);
         //hotelDB.searchHotelReservations(connection, , int branchID, LocalDate checkIn, LocalDate checkOut)
-        hotelDB.searchAvailabilityType(connection, "Westin Hotel", 1, "Presidential Suite", LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-01"));
+        hotelDB.searchAvailabilityType(connection, "Four Seasons Hotel", 1, "Single Suite", LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-01"));
 
     } catch (SQLException e) {
         e.printStackTrace();
@@ -327,81 +328,84 @@ public class HotelDatabase {
     return connection;
   }
 
-  public void showTable(Connection connection) throws SQLException {
+    public void showTable(Connection connection) throws SQLException {
 
-    Scanner scan = new Scanner(System.in);
-    int tableIndex = -1;
+        Scanner scan = new Scanner(System.in);
+        int tableIndex = -1;
 
-    while (tableIndex == -1){
+        while (tableIndex == -1){
 
-      printViewTables();
+            printViewTables();
 
-      // Narrow which table the user wants to see:
-      System.out.print("Enter a table to see: ");
-      switch (String.valueOf(scan.next()).toUpperCase()){
-        case "H":
-          tableIndex = 0;
-          break;
-        case "R":
-          tableIndex = 1;
-          break;
-        case "C":
-          tableIndex = 2;
-          break;
-        case "V":
-          tableIndex = 3;
-          break;
-        case "HA":
-          tableIndex = 4;
-          break;
-        case "HR":
-          tableIndex = 5;
-          break;
-        case "BK":
-          tableIndex = 6;
-          break;
-        case "IN":
-          tableIndex = 7;
-          break;
-        default:
-          System.out.println("ERROR: Invalid Table. Please choose from the tables below: ");
-      }
-    }
-
-    // Retreive all the rows from that table:
-    ResultSet rs = null;
-    String sql = "SELECT * FROM " + ALL.get(tableIndex).get(0);
-    PreparedStatement pStmt = connection.prepareStatement(sql);
-
-    try {
-
-      rs = pStmt.executeQuery();
-
-      while (rs.next()) {
-
-        for (int i = 1; i < ALL.get(tableIndex).size(); i++){
-
-          // Need to make distinction between values that are Strings, Ints, or Dates:
-          if (NUMBERS.contains(ALL.get(tableIndex).get(i))){
-            System.out.print(rs.getInt(ALL.get(tableIndex).get(i)));
-          }
-          else if (DATES.contains(ALL.get(tableIndex).get(i))){
-            System.out.print(rs.getDate(ALL.get(tableIndex).get(i)));
-          }
-          else {
-            System.out.print(rs.getString(ALL.get(tableIndex).get(i)));
-          }
-          System.out.print(" ");
+            // Narrow which table the user wants to see:
+            System.out.print("Enter a table to see: ");
+            switch (String.valueOf(scan.next()).toUpperCase()){
+                case "H":
+                    tableIndex = 0;
+                    break;
+                case "R":
+                    tableIndex = 1;
+                    break;
+                case "C":
+                    tableIndex = 2;
+                    break;
+                case "V":
+                    tableIndex = 3;
+                    break;
+                case "HA":
+                    tableIndex = 4;
+                    break;
+                case "HR":
+                    tableIndex = 5;
+                    break;
+                case "BK":
+                    tableIndex = 6;
+                    break;
+                case "IN":
+                    tableIndex = 7;
+                    break;
+                default:
+                    System.out.println("ERROR: Invalid Table. Please choose from the tables below: ");
+            }
         }
-        System.out.println();
-      }
+
+        // Retreive all the rows from that table:
+        ResultSet rs = null;
+        String sql = "SELECT * FROM " + ALL.get(tableIndex).get(0);
+        PreparedStatement pStmt = connection.prepareStatement(sql);
+        System.out.println(ALL.get(tableIndex).get(0));
+
+        try {
+
+            rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+
+                System.out.println("here");
+
+                for (int i = 1; i < ALL.get(tableIndex).size(); i++){
+
+                    // Need to make distinction between values that are Strings, Ints, or Dates:
+                    if (NUMBERS.contains(ALL.get(tableIndex).get(i))){
+                        System.out.print(rs.getInt(ALL.get(tableIndex).get(i)));
+                    }
+                    else if (DATES.contains(ALL.get(tableIndex).get(i))){
+                        System.out.print(rs.getDate(ALL.get(tableIndex).get(i)));
+                    }
+                    else {
+                        System.out.print(rs.getString(ALL.get(tableIndex).get(i)));
+                    }
+                    System.out.print(" ");
+                }
+                System.out.println();
+            }
+        }
+        catch (SQLException e) { e.printStackTrace(); }
+        finally {
+            pStmt.close();
+            if(rs != null) { rs.close(); }
+        }
     }
-    catch (SQLException e) { e.printStackTrace(); }
-    finally {
-      pStmt.close();
-      if(rs != null) { rs.close(); }
-    }
-  }
 
   // Closes a DB Connection:
   public void close(Connection connection) throws SQLException {
@@ -872,8 +876,8 @@ public class HotelDatabase {
         PreparedStatement pStmt = connection.prepareStatement(sql);
         pStmt.clearParameters();
 
-        pStmt.setString(1, start);
-        pStmt.setString(2, end);
+        pStmt.setString(1, start.toString());
+        pStmt.setString(2, end.toString());
 
         try { pStmt.executeUpdate(); }
         catch (SQLException e) { throw e; }
@@ -970,7 +974,7 @@ public class HotelDatabase {
   public void searchAvailabilityType(Connection connection, String hotel_name, int branchID, String type, LocalDate from, LocalDate to) throws SQLException {
 
     ResultSet rs = null;
-    String sql = "SELECT num_avail, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type = ? AND date_from >= to_date(?, 'YYYY-MM-DD') AND date_to <= to_date(?, 'YYYY-MM-DD')";
+    String sql = "SELECT num_avail, price FROM Information WHERE hotel_name = ? AND branch_ID = ? AND type >= ? AND date_from <= to_date(?, 'YYYY-MM-DD') AND date_to = to_date(?, 'YYYY-MM-DD')";
 
     PreparedStatement pStmt = connection.prepareStatement(sql);
     pStmt.clearParameters();
@@ -983,17 +987,16 @@ public class HotelDatabase {
     pStmt.setString(3, getType());
     pStmt.setString(4, from.toString());
     pStmt.setString(5, to.toString());
-    System.out.println(pStmt.toString());
 
     try {
 
-      System.out.printf("  Availiabilities for %S type at %S, branch ID (%d): \n", getType(), getHotelName(), getBranchID());
+      System.out.printf("  Availabilities for %S type at %S, branch ID (%d): \n", getType(), getHotelName(), getBranchID());
       System.out.printf("  Date Listing: " + String.valueOf(from) + " TO " + String.valueOf(to) + "\n");
       System.out.println("+------------------------------------------------------------------------------+");
 
       rs = pStmt.executeQuery();
 
-      while(rs.first()) {
+      while(rs.next()) {
         System.out.println(rs.getInt(1) + " " + rs.getInt(2));
       }
     }
@@ -1278,7 +1281,7 @@ public class HotelDatabase {
 
       rs = pStmt.executeQuery();
 
-      while (rs.nextLine()) {
+      while (rs.next()) {
         System.out.println(rs.getString(1) + " " + rs.getInt(2) + " " + rs.getString(3) + " " + rs.getInt(4));
       }
     }
