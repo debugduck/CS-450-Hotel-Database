@@ -533,18 +533,23 @@ public class AddMenu extends JPanel implements ActionListener {
             // set gender
             pStmt.setString(5, genderField.getText());
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
+            try {
+                pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The customer has been successfully added to the table.",
+                        "Customer Added",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            catch (SQLException s) {
+                JOptionPane.showMessageDialog(frame,
+                        "The customer was unable to be added:\n -Customer already exists\n -Customer ID is not valid\n -Gender is not valid\n",
+                        "Customer Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs.close();
             }
-        }
-        else {
-            JOptionPane.showMessageDialog(frame,
-                    "There was an error with your request.",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -575,18 +580,21 @@ public class AddMenu extends JPanel implements ActionListener {
             try {
                 pStmt.executeUpdate();
                 addBookingFields();
+                JOptionPane.showMessageDialog(frame,
+                        "The reservation has been successfully added to the table.",
+                        "Reservation Added",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
-            catch (SQLException e) { throw e; }
+            catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Reservation unable to be added for one of the following reasons:\n -Customer does not exist\n -Reservation number already exists\n",
+                        "Reservation Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs.close();
             }
-        }
-        else {
-            JOptionPane.showMessageDialog(frame,
-                    "There was an error with your request.",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -623,18 +631,21 @@ public class AddMenu extends JPanel implements ActionListener {
 
             try {
                 pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The booking has been successfully added to the table.",
+                        "Booking Added",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
-            catch (SQLException e) { throw e; }
+            catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Booking unable to be added for one or more of the following reasons:\n -Party size too large for specified room\n -Hotel does not exist\n -No rooms available for specified room type\n -Reservation number already exists\n",
+                        "Booking Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs.close();
             }
-        }
-        else {
-            JOptionPane.showMessageDialog(frame,
-                    "There was an error with your request.",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -655,8 +666,19 @@ public class AddMenu extends JPanel implements ActionListener {
             pStmt.setString(3, typeField.getText());
             pStmt.setInt(4, Integer.parseInt(capacityField.getText()));
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { e.printStackTrace(); }
+            try {
+                pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The room has been successfully added to the table.",
+                        "Room Added",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "The room was unable to be added.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs1.close();
@@ -688,8 +710,19 @@ public class AddMenu extends JPanel implements ActionListener {
             pStmt.setInt(2, Integer.parseInt(branchIDField.getText()));
             pStmt.setString(3, phoneField.getText());
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
+            try {
+                pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The hotel has been successfully added to the table.",
+                        "Hotel Added",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "The hotel was unable to be added:\n -Hotel already exists\n",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs1.close();
@@ -719,18 +752,23 @@ public class AddMenu extends JPanel implements ActionListener {
 
             pStmt.setInt(3, Integer.parseInt(zipField.getText()));
 
-            try { pStmt.executeUpdate(); }
-            catch (SQLException e) { throw e; }
+            try {
+                pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The address has been successfully added to the table.",
+                        "Hotel Address Added",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "There was an error while adding the hotel address.",
+                        "Error Message",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             finally {
                 pStmt.close();
                 rs.close();
             }
-        }
-        else {
-            JOptionPane.showMessageDialog(frame,
-                    "There was an error with your request.",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -748,7 +786,12 @@ public class AddMenu extends JPanel implements ActionListener {
         pStmt.setInt(5, Integer.parseInt(zipField.getText()));
 
         try { pStmt.executeUpdate(); }
-        catch (SQLException e) { throw e; }
+        catch (SQLException e) {
+            JOptionPane.showMessageDialog(frame,
+                    "There was an error while adding the hotel address.",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         finally { pStmt.close(); }
     }
 
@@ -765,7 +808,12 @@ public class AddMenu extends JPanel implements ActionListener {
         pStmt.setInt(4, Integer.parseInt(quantityField.getText()));
 
         try { pStmt.executeUpdate(); }
-        catch (SQLException e) { e.printStackTrace(); }
+        catch (SQLException e) {
+            JOptionPane.showMessageDialog(frame,
+                    "There was an error while adding the hotel address.",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         finally { pStmt.close(); }
     }
 
@@ -800,62 +848,30 @@ public class AddMenu extends JPanel implements ActionListener {
         } else if("SUBMITCUSTOMER".equals(e.getActionCommand())) {
             try {
                 addCustomer(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The customer has been successfully added to the table.",
-                        "Customer Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
-                JOptionPane.showMessageDialog(frame,
-                        "The customer was unable to be added:\n -Customer already exists\n -Customer ID is not valid\n -Gender is not valid\n",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                s.printStackTrace();
             }
         } else if("SUBMITHOTEL".equals(e.getActionCommand())) {
             try {
                 addHotel(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The hotel has been successfully added to the table.",
-                        "Customer Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
-                JOptionPane.showMessageDialog(frame,
-                        "The hotel was unable to be added:\n -Customer already exists\n -Customer ID is not valid\n -Gender is not valid\n",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                s.printStackTrace();
             }
         } else if("SUBMITROOM".equals(e.getActionCommand())) {
             try {
                 addRoom(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The room has been successfully added to the table.",
-                        "Customer Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
-                JOptionPane.showMessageDialog(frame,
-                        "The room was unable to be added:\n -Customer already exists\n -Customer ID is not valid\n -Gender is not valid\n",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                s.printStackTrace();
             }
         } else if("SUBMITADDRESS".equals(e.getActionCommand())) {
             try {
                 addAddress(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The address has been successfully added to the table.",
-                        "Customer Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
-                JOptionPane.showMessageDialog(frame,
-                        "The address was unable to be added:\n -Address already exists\n -State is not valid\n",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                s.printStackTrace();
             }
         } else if("SUBMITRESERVATION".equals(e.getActionCommand())) {
             try {
                 addReservation(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The reservation has been successfully added to the table.",
-                        "Reservation Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 s.printStackTrace();
             }
@@ -863,10 +879,6 @@ public class AddMenu extends JPanel implements ActionListener {
             try {
                 addBooking(connection);
                 resetFields();
-                JOptionPane.showMessageDialog(frame,
-                        "The booking has been successfully added to the table.",
-                        "Reservation Added",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 s.printStackTrace();
             }
