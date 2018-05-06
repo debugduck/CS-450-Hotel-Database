@@ -354,6 +354,57 @@ public class SearchMenu extends JPanel implements ActionListener {
         }
     }
 
+    // Finds the availability of hotels in a certain area (city):
+    public void generalSearch(Connection connection) throws SQLException {
+
+        ResultSet rs = null;
+        String sql = "SELECT DISTINCT I1.hotel_name, I1.branch_ID, I1.type, R.capacity "
+                     + "FROM Information I1, Room R, Hotel_Address HA "
+                     + "WHERE I1.hotel_name = R.hotel_name AND I1.hotel_name = HA.hotel_name "
+                     + "AND I1.branch_ID = R.branch_ID AND I1.branch_ID = HA.branch_ID "
+                     + "AND I1.type = R.type "
+                     + "AND HA.city = ? "
+                     + "AND R.capacity >= ? "
+
+                     + "AND NOT EXISTS ( "
+                     + "SELECT I2.type "
+                     + "FROM Information I2 "
+                     + "WHERE I1.type = I2.type "
+                     + "AND I2.date_from >= to_date(?, 'YYYY-MM-DD') "
+                     + "AND I2.date_to <= to_date(?, 'YYYY-MM-DD') "
+                     + "AND I2.num_avail = 0)";
+
+        PreparedStatement pStmt = connection.prepareStatement(sql);
+        pStmt.clearParameters();
+
+        pStmt.setString(1, cityField.getText());
+        pStmt.setInt(2, Integer.parseInt(partySizeField.getText()));
+        pStmt.setString(3, checkInField.getText());
+        pStmt.setString(4, checkOutField.getText());
+
+        try {
+
+          rs = pStmt.executeQuery();
+          this.queryResult = new JLabel("Results");
+          String result = "<html><br/><br/>Results:<br/><br/>";
+          if(!rs.next()) { result += "There are no rows in this table."; }
+
+          while (rs.next()) {
+              result += "Reservation number: " + rs.getInt(1) + "\n";
+          }
+          result += "</html>";
+          queryResult.setText(result);
+          frame.add(queryResult);
+          frame.revalidate();
+          frame.repaint();
+      }
+      catch (SQLException e) { e.printStackTrace(); }
+      finally {
+          pStmt.close();
+          if(rs != null) { rs.close(); }
+      }
+    }
+
     public void actionPerformed(ActionEvent e) {
 
         if(queryResult != null) {
