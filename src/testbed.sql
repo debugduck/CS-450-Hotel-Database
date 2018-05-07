@@ -64,3 +64,6 @@ INSERT INTO HOTEL_ROOMS (hotel_name, branch_ID, type, quantity) VALUES ('Four Se
 INSERT INTO HOTEL_ROOMS (hotel_name, branch_ID, type, quantity) VALUES ('Four Seasons Hotel', 1, 'Twin Suite', 10);
 
 -- -------------------------------------------------------------------------------
+
+INSERT INTO DATELIST VALUES (to_date('2018-01-01', 'YYYY-MM-DD'), to_date('2018-01-02', 'YYYY-MM-DD');
+INSERT INTO DATELIST VALUES (to_date('2018-01-02', 'YYYY-MM-DD'), to_date('2018-01-03', 'YYYY-MM-DD');
