@@ -185,8 +185,8 @@ public class ViewMenu extends JPanel implements ActionListener {
             rs = pStmt.executeQuery();
 
             String result = "<html><br/><br/>Results:<br/><br/>";
-            if(!rs.next()) { result += "There are no rows in this table."; }
-            while (rs.next()) {
+            if(rs == null) { result += "There are no rows in this table."; }
+            while ( rs != null && rs.next()) {
 
                 for (int i = 1; i < db.ALL.get(tableIndex).size(); i++){
 

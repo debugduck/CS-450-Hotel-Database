@@ -178,7 +178,7 @@ public class HotelDatabase {
         //hotelDB.showTable(connection);
         //hotelDB.searchCustomerReservations(connection, 2);
         //hotelDB.searchHotelReservations(connection, , int branchID, LocalDate checkIn, LocalDate checkOut)
-        hotelDB.searchAvailabilityType(connection, "Four Seasons Hotel", 1, "Single Suite", LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-01"));
+        //hotelDB.searchAvailabilityType(connection, "Four Seasons Hotel", 1, "Single Suite", LocalDate.parse("2018-12-01"), LocalDate.parse("2018-12-01"));
 
     } catch (SQLException e) {
         e.printStackTrace();
@@ -380,8 +380,6 @@ public class HotelDatabase {
             rs = pStmt.executeQuery();
 
             while (rs.next()) {
-
-                System.out.println("here");
 
                 for (int i = 1; i < ALL.get(tableIndex).size(); i++){
 

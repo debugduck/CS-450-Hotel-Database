@@ -14,12 +14,7 @@ import java.sql.*;
 public class SearchMenu extends JPanel implements ActionListener {
 
     JButton CResButton;
-    JButton HResButton;
     JButton generalButton;
-    JButton availButton;
-    JButton cityButton;
-    JButton stateButton;
-    JButton zipButton;
     JButton CResSubmit;
     JButton generalSubmit;
     JButton reservationSubmit;
@@ -97,53 +92,18 @@ public class SearchMenu extends JPanel implements ActionListener {
         CResButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
         CResButton.setActionCommand("CRES");
 
-        HResButton = new JButton("Search Hotel Reservations");
-        HResButton.setVerticalTextPosition(AbstractButton.CENTER);
-        HResButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
-        HResButton.setActionCommand("HRES");
-
         generalButton = new JButton("Search General Availability");
         generalButton.setVerticalTextPosition(AbstractButton.CENTER);
         generalButton.setHorizontalTextPosition(AbstractButton.LEADING);
         generalButton.setActionCommand("GENERAL");
 
-        availButton = new JButton("Search All Availability");
-        availButton.setVerticalTextPosition(AbstractButton.CENTER);
-        availButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        availButton.setActionCommand("AVAILABILITY");
-
-        cityButton = new JButton("Search City");
-        cityButton.setVerticalTextPosition(AbstractButton.CENTER);
-        cityButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        cityButton.setActionCommand("CITY");
-
-        stateButton = new JButton("Search State");
-        stateButton.setVerticalTextPosition(AbstractButton.CENTER);
-        stateButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        stateButton.setActionCommand("STATE");
-
-        zipButton = new JButton("Search Zipcode");
-        zipButton.setVerticalTextPosition(AbstractButton.CENTER);
-        zipButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        zipButton.setActionCommand("ZIP");
-
 
         CResButton.addActionListener(this);
-        HResButton.addActionListener(this);
         generalButton.addActionListener(this);
-        availButton.addActionListener(this);
-        cityButton.addActionListener(this);
-        stateButton.addActionListener(this);
-        zipButton.addActionListener(this);
 
         //Add Components to this container, using the default FlowLayout.
         add(CResButton);
-        add(HResButton);
         add(generalButton);
-        add(availButton);
-        add(cityButton);
-        add(stateButton);
-        add(zipButton);
 
         this.setOpaque(true); //content panes must be opaque
         frame.setContentPane(this);
@@ -285,10 +245,10 @@ public class SearchMenu extends JPanel implements ActionListener {
             rs = pStmt.executeQuery();
             this.queryResult = new JLabel("Results");
             String result = "<html><br/><br/>Results:<br/><br/>";
-            if(!rs.next()) { result += "There are no rows in this table."; }
+            if(rs == null) { result += "There are no rows in this table."; }
 
-            while (rs.next()) {
-                result += "Reservation number: " + rs.getInt(1) + "\n";
+            while (rs != null && rs.next()) {
+                result += "Reservation number: " + String.valueOf(rs.getInt(1)) + "\n";
             }
             result += "</html>";
             queryResult.setText(result);
@@ -307,7 +267,7 @@ public class SearchMenu extends JPanel implements ActionListener {
     public void generalSearch(Connection connection) throws SQLException {
 
         ResultSet rs = null;
-        String sql = "SELECT DISTINCT I1.hotel_name, I1.branch_ID, I1.type, R.capacity "
+        String sql = "SELECT DISTINCT I1.hotel_name, I1.branch_ID, I1.type, R.capacity, I1.price "
                      + "FROM Information I1, Room R, Hotel_Address HA "
                      + "WHERE I1.hotel_name = R.hotel_name AND I1.hotel_name = HA.hotel_name "
                      + "AND I1.branch_ID = R.branch_ID AND I1.branch_ID = HA.branch_ID "
@@ -336,10 +296,14 @@ public class SearchMenu extends JPanel implements ActionListener {
           rs = pStmt.executeQuery();
           this.queryResult = new JLabel("Results");
           String result = "<html><br/><br/>Results:<br/><br/>";
-          if(!rs.next()) { result += "There are no rows in this table."; }
+          if(rs == null) { result += "There are no rows in this table."; }
 
-          while (rs.next()) {
-              result += "Reservation number: " + rs.getInt(1) + "\n";
+          while (rs != null && rs.next()) {
+              result += "Hotels Available: " + rs.getString(1) + "<br/>"
+                                             + String.valueOf(rs.getInt(2)) + "<br/>"
+                                             + rs.getString(3) + "<br/>"
+                                             + String.valueOf(rs.getInt(4)) + "<br/>"
+                                             + String.valueOf(rs.getInt(5)) + "\n";
           }
           result += "</html>";
           queryResult.setText(result);

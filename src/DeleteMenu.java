@@ -168,10 +168,17 @@ public class DeleteMenu extends JPanel implements ActionListener {
     public void addReservationFields() {
         //Create everything.
         resNumField = new JTextField(20);
-        resNumField.setActionCommand("SUBMITCUSTOMER");
+        resNumField.setActionCommand("SUBMITRESERVATION");
         resNumField.addActionListener(this);
+        cIDField = new JTextField(20);
+        cIDField.setActionCommand("SUBMITRESERVATION");
+        cIDField.addActionListener(this);
+
         resNumLabel = new JLabel("Enter Reservation Number to delete:");
         resNumLabel.setLabelFor(resNumField);
+        cIDLabel = new JLabel("Enter Customer ID associated with this reservation number:");
+        cIDLabel.setLabelFor(cIDField);
+
 
         //Lay out everything.
         JPanel textPane = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -183,6 +190,8 @@ public class DeleteMenu extends JPanel implements ActionListener {
         textPane.add(reservationSubmit);
         textPane.add(resNumLabel);
         textPane.add(resNumField);
+        textPane.add(cIDLabel);
+        textPane.add(cIDField);
 
         add(textPane);
         frame.revalidate();
@@ -355,11 +364,12 @@ public class DeleteMenu extends JPanel implements ActionListener {
 
         if (rs.next()){
 
-            String sql = "DELETE FROM Reservation WHERE res_num = ?";
+            String sql = "DELETE FROM Reservation WHERE res_num = ? AND c_ID = ?";
             PreparedStatement pStmt = connection.prepareStatement(sql);
             pStmt.clearParameters();
 
             pStmt.setInt(1, Integer.parseInt(resNumField.getText()));
+            pStmt.setInt(2, Integer.parseInt(cIDField.getText()));
 
             try { pStmt.executeUpdate(); }
             catch (SQLException e) { throw e; }
@@ -501,7 +511,7 @@ public class DeleteMenu extends JPanel implements ActionListener {
                 deleteHotel(connection);
                 JOptionPane.showMessageDialog(frame,
                         "The hotel has been successfully deleted from the table.",
-                        "Customer Added",
+                        "Hotel Deleted",
                         JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 JOptionPane.showMessageDialog(frame,
@@ -513,12 +523,12 @@ public class DeleteMenu extends JPanel implements ActionListener {
             try {
                 deleteRoom(connection);
                 JOptionPane.showMessageDialog(frame,
-                        "The room has been successfully added to the table.",
-                        "Customer Added",
+                        "The room has been successfully deleted from the table.",
+                        "Room Deleted",
                         JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 JOptionPane.showMessageDialog(frame,
-                        "The room was unable to be added:\n",
+                        "The room was unable to be deleted.",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -531,7 +541,7 @@ public class DeleteMenu extends JPanel implements ActionListener {
                         JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 JOptionPane.showMessageDialog(frame,
-                        "The address was unable to be added:\n -Address already exists\n -State is not valid\n",
+                        "The address was unable to be deleted.",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -544,7 +554,7 @@ public class DeleteMenu extends JPanel implements ActionListener {
                     JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
                 JOptionPane.showMessageDialog(frame,
-                    "The reservation was unable to be deleted from the table",
+                    "The reservation was unable to be deleted from the table.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             }

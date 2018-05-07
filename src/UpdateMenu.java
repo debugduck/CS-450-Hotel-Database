@@ -327,7 +327,13 @@ public class UpdateMenu extends JPanel implements ActionListener {
             pStmt.setString(1, firstNameField.getText());
             pStmt.setInt(2, Integer.parseInt(cIDField.getText()));
 
-            try { pStmt.executeUpdate(); }
+            try {
+                pStmt.executeUpdate();
+                JOptionPane.showMessageDialog(frame,
+                        "The customer name has been successfully updated.",
+                        "Customer Name Changed",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(frame,
                         "The customer name was unable to be changed.",
@@ -496,15 +502,8 @@ public class UpdateMenu extends JPanel implements ActionListener {
             try {
                 updateCustomerFirstName(connection);
                 updateCustomerLastName(connection);
-                JOptionPane.showMessageDialog(frame,
-                        "The customer name has been successfully updated.",
-                        "Customer Name Changed",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch(SQLException s) {
-                JOptionPane.showMessageDialog(frame,
-                        "The customer was unable to be added:\n -Customer already exists\n -Customer ID is not valid\n -Gender is not valid\n",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                s.printStackTrace();
             }
         } else if("SUBMITAGE".equals(e.getActionCommand())) {
             try {
